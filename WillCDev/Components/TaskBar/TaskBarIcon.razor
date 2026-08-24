@@ -1,0 +1,27 @@
+﻿<div class="@(StartMenu ? "task-icon start" : "task-icon")">
+    <img class="icon-img" src="@_iconPath"/>
+    @if (IconText?.Length > 0)
+    {
+        <p class="icon-text">@IconText</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool StartMenu { get; set; } = false;
+
+    [Parameter]
+    public string IconName { get; set; } = "Internet Explorer 6";
+
+    [Parameter]
+    public string IconType { get; set; } = "png";
+
+    [Parameter]
+    public string IconText { get; set; } = "";
+
+    private string _iconPath { get; set; } = "";
+
+    private const string _baseIconPath = "/icons/";
+
+    protected override void OnParametersSet() => _iconPath = _baseIconPath + IconName + "." + IconType;
+}

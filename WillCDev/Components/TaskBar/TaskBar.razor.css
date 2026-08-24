@@ -1,0 +1,14 @@
+﻿.task-bar-body {
+    z-index: 10000;
+    height: 2em;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background: #4573de;
+    background: linear-gradient(180deg, rgba(69, 115, 222, 1) 9%, rgba(42, 93, 212, 1) 27%, rgba(37, 91, 217, 1) 57%, rgba(20, 100, 219, 1) 89%);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: .5em;
+    box-shadow: 4px 3px 3px 3px rgba(0,0,0,0.1);
+}
