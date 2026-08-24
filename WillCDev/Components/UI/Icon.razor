@@ -1,0 +1,23 @@
+﻿@rendermode InteractiveServer
+<img width="auto" height="@IconSize%" src="@_iconPath" />
+
+@code {
+    [Parameter]
+    public string IconName { get; set; } = "Internet Explorer 6";
+
+    [Parameter]
+    public int IconSize { get; set; } = 100;
+
+    private string _iconPath { get; set; } = "";
+
+    private string _iconType { get; set; } = "png";
+
+    private const string _baseIconPath = "/icons/";
+
+    protected override void OnParametersSet() {
+        if (IconName.Contains("start"))
+            _iconType = "webp";
+
+        _iconPath = _baseIconPath + IconName + "." + _iconType;
+    }
+}

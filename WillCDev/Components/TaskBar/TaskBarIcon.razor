@@ -1,5 +1,7 @@
-﻿<div class="@(StartMenu ? "task-icon start" : "task-icon")">
-    <img class="icon-img" src="@_iconPath"/>
+﻿@using WillCDev.Components.UI
+
+<div class="@(StartMenu ? "task-icon start" : "task-icon")">
+    <Icon IconName="@IconName" IconSize="@IconSizeRel" />
     @if (IconText?.Length > 0)
     {
         <p class="icon-text">@IconText</p>
@@ -14,14 +16,8 @@
     public string IconName { get; set; } = "Internet Explorer 6";
 
     [Parameter]
-    public string IconType { get; set; } = "png";
-
-    [Parameter]
     public string IconText { get; set; } = "";
 
-    private string _iconPath { get; set; } = "";
-
-    private const string _baseIconPath = "/icons/";
-
-    protected override void OnParametersSet() => _iconPath = _baseIconPath + IconName + "." + IconType;
+    [Parameter]
+    public int IconSizeRel { get; set; } = 100;
 }

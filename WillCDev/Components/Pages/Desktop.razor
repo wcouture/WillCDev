@@ -1,9 +1,53 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using WillCDev.Components.Window
 
 <PageTitle>Desktop</PageTitle>
 
 <body>
-    <div class="background-container">
-        <img class="desktop-background" src="/images/desktop-background.jpg" />
-    </div>
+    @for (int i = 0; i < maxWindows; i++)
+    {
+            <Window WindowSetting="windows[i]" CloseWindow="@CloseWindow">
+                <NotFound />
+            </Window>
+    }
+    
+    <DesktopBackground/>
 </body>
+
+@code {
+    private int maxWindows = 16;
+    private int windowCount = 0;
+    private OpenWindow?[] windows { get; set; } = new OpenWindow?[16];
+
+    [Inject]
+    public IJSRuntime JS { get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("InitDraggables");
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        windows[0] = new OpenWindow { ID = 0, WindowTitle = "Start Menu", Program = Programs.StartMenu };
+        windows[1] = new OpenWindow { ID = 1, WindowTitle = "Settings", Program = Programs.Settings };
+        windows[2] = new OpenWindow { ID = 2, WindowTitle = "About Me", Program = Programs.AboutMe };
+
+        windowCount = 3;
+    }
+
+    private void CloseWindow(int windowIndex)
+    {
+        if (windowIndex >= 0 && windowIndex < maxWindows)
+        {
+            windows[windowIndex] = null;
+            windowCount -= 1;
+            StateHasChanged();
+        }
+    }
+}

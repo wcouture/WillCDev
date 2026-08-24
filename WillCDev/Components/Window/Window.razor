@@ -1,0 +1,45 @@
+﻿
+@rendermode InteractiveServer
+@using WillCDev.Components.UI
+
+@if (WindowSetting != null)
+{
+    <section class="window-frame draggable">
+        <div class="title-bar">
+            <div class="window-icon">
+                <Icon IconName="Application Window" />
+                </div>
+            <div class="window-title">
+                @WindowSetting?.WindowTitle | @WindowSetting?.Program.ToString()
+                </div>
+            <div class="window-exit" @onclick="OnCloseWindow">
+                X
+                </div>
+        </div>
+        <div class="window-body" >
+            @ChildContent
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public Action<int>? CloseWindow { get; set; }
+
+    [Parameter]
+    public OpenWindow? WindowSetting { get; set; }
+
+    public string WindowTitle { get; set; } = "Window Title";
+
+    private void OnCloseWindow()
+    {
+        if (WindowSetting != null)
+        {
+            CloseWindow?.Invoke(WindowSetting.ID);
+        }
+        StateHasChanged();
+    }
+}

@@ -33,10 +33,7 @@
             transition: 0.1s ease-in-out;
         }
 
-.icon-img {
-    width: auto;
-    height: 100%;
-}
+
 
 .task-icon.start .icon-img {
     height: 70%;
