@@ -1,0 +1,27 @@
+﻿.icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25em;
+    box-sizing: border-box;
+    max-width: 5em;
+    max-height: 6em;
+}
+
+.icon-container:hover {
+    border-radius: 5px;
+    background-color: #b6dbff46;
+    cursor: pointer;
+}
+
+.icon-wrapper {
+    max-width: 3em;
+    max-height: 3em;
+}
+
+.icon-label {
+    text-align: center;
+    text-shadow: 0px 0px 5px white;
+
+}

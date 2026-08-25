@@ -1,0 +1,27 @@
+﻿@using WillCDev.Components.UI
+@using WillCDev.Components.Window
+@using WillCDev.Services.WindowService
+
+<section class="icon-container" @onclick="OpenProgram">
+    <div class="icon-wrapper">
+        <Icon IconName="@Shortcut.IconName" />
+    </div>
+    <p class="icon-label">@Shortcut.Label</p>
+</section>
+
+@code {
+    [Parameter]
+    public required DesktopShortcut Shortcut { get; set; }
+
+    [Inject]
+    public required IWindowService WindowService { get; set; }
+
+    private async Task OpenProgram()
+    {
+        var program = new ProgramWindow()
+        {
+            Program = Shortcut.Program,
+        };
+        await WindowService.OpenWindow(program);
+    }
+}

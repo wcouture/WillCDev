@@ -1,9 +1,10 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@using WillCDev.Components.Window
 @using WillCDev.Components.TaskBar
-@using WillCDev.Services.WindowService
+@using WillCDev.Components.Window
+@using WillCDev.Services.DesktopService
 @using WillCDev.Services.TaskbarService
+@using WillCDev.Services.WindowService
 
 <PageTitle>Desktop</PageTitle>
 
@@ -15,6 +16,10 @@
     
     <DesktopBackground/>
     <div class="desktop-icons">
+        @foreach (var shortcut in shortcuts)
+        {
+            <DesktopIcon Shortcut="shortcut" />
+        }
     </div>
 </body>
 
@@ -25,11 +30,16 @@
     private bool bringWindowToFront = false;
     private int windowToBringToFrontId = -1;
 
+    private List<DesktopShortcut> shortcuts = new List<DesktopShortcut>();
+
     [Inject]
     public required IJSRuntime JS { get; set; }
 
     [Inject]
     public required IWindowService WindowService { get; set; }
+
+    [Inject]
+    public required IDesktopService DesktopService { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -47,6 +57,9 @@
         WindowService.Subscribe(UpdateWindows);
         WindowService.SubscribeBringToFront(BringWindowToFront);
         maxWindows = WindowService.GetMaxWindows();
+
+        DesktopService.SubscribeToDesktopEvents(UpdateDesktopIcons);
+        await DesktopService.AddDesktopShortcut(new DesktopShortcut { ID = 1, Label = "Settings", IconName = "Briefcase", Program = EProgram.Settings });
     }
 
     private async Task ResetDraggables() {
@@ -57,6 +70,12 @@
     {
         windows = updatedWindows;
         windowCount = windows.Count(w => w != null);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateDesktopIcons(List<DesktopShortcut> updatedShortcuts)
+    {
+        shortcuts = updatedShortcuts;
         await InvokeAsync(StateHasChanged);
     }
 
