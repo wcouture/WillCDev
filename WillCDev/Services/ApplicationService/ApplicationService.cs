@@ -1,17 +1,20 @@
 ﻿using WillCDev.Components.Desktop;
+using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
 using WillCDev.Services.DesktopService;
+using WillCDev.Services.ProgramService;
 using WillCDev.Services.TaskbarService;
 using WillCDev.Services.WindowService;
 
 namespace WillCDev.Services.ApplicationService
 {
-    public class ApplicationService(IWindowService windowService, ITaskbarService taskbarService, IDesktopService desktopService) : IApplicationService
+    public class ApplicationService(IWindowService windowService, ITaskbarService taskbarService, IDesktopService desktopService, IProgramRegistry programRegistry) : IApplicationService
     {
         private readonly IWindowService _windowService = windowService;
         private readonly ITaskbarService _taskbarService = taskbarService;
         private readonly IDesktopService _desktopService = desktopService;
+        private readonly IProgramRegistry _programRegistry = programRegistry;
 
         private List<Func<List<DesktopShortcut>, Task>> _desktopCallbacks = new();
         private List<Func<List<TaskBarProgram>, Task>> _taskbarCallbacks = new();
@@ -28,14 +31,33 @@ namespace WillCDev.Services.ApplicationService
             _windowService.SubscribeWindowUpdates(OnUpdateWindows);
             _windowService.SubscribeBringToFront(OnBringWindowForward);
             _taskbarService.SubscribeTaskbarUpdates(OnUpdateTaskBar);
+            await LoadDefaultPrograms();
+        }
 
-            int startMenu = await AddApplication(new() { Name = "Start Menu", Description = "Start Menu", IconName = "start", Program = EProgram.StartMenu });
-            await CreateTaskBarIcon(startMenu);
+        private async Task LoadDefaultPrograms()
+        {
+            var programs = _programRegistry.GetProgramAttributes();
 
-            int app1 = await AddApplication(new() { Name = "About Me", Description = "Learn more about me", IconName = "Fax Sender Information", Program = EProgram.AboutMe });
-            await CreateDesktopShortcut(app1);
-            await CreateTaskBarIcon(app1);
-
+            foreach (var program in programs)
+            {
+                ProgramAttribute programAttribute = program.Value;
+                if (programAttribute != null)
+                {
+                    var app = new Application()
+                    {
+                        Name = programAttribute.Name,
+                        Description = programAttribute.Description,
+                        IconName = programAttribute.IconName,
+                        ProgramId = programAttribute.ID,
+                    };
+                    var appId = await AddApplication(app);
+                    
+                    if (programAttribute.DefaultTaskbarIcon)
+                        await CreateTaskBarIcon(appId);
+                    if (programAttribute.DefaultDesktopShortcut)
+                        await CreateDesktopShortcut(appId);
+                }
+            }
         }
 
         public List<Application?> GetApplications() => applications.ToList();
@@ -75,7 +97,7 @@ namespace WillCDev.Services.ApplicationService
                 ProgramWindow window = new ProgramWindow()
                 {
                     AppId = appId,
-                    Program = application.Program,
+                    ProgramId = application.ProgramId,
                     WindowTitle = application.Name,
                 };
                 await _windowService.OpenWindow(window);
@@ -119,11 +141,14 @@ namespace WillCDev.Services.ApplicationService
             var application = applications[appId];
             if (application is not null && application.Id == appId)
             {
+                var programAttr = _programRegistry.GetProgram(application.ProgramId);
+
                 TaskBarProgram program = new()
                 {
                     AppId = appId,
                     IconName = application.IconName,
-                    IsActive = false
+                    IsActive = false,
+                    StartMenu = programAttr != null ? programAttr.ComponentType == typeof(StartMenu) : false
                 };
                 await _taskbarService.AddTaskBarProgram(program);
             }

@@ -1,13 +1,18 @@
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Xml.Serialization;
+using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
+using WillCDev.Services.ProgramService;
 using WillCDev.Services.TaskbarService;
 namespace WillCDev.Services.WindowService
 {
     
-    public class WindowService : IWindowService
+    public class WindowService(IProgramRegistry programRegistry) : IWindowService
     {
-        private const int MaximumWindows = 2;
+        private readonly IProgramRegistry _programRegistry = programRegistry;
+
+        private const int MaximumWindows = 32;
         public ProgramWindow?[] Windows { get => windows; }
         private ProgramWindow?[] windows {get; set;} = new ProgramWindow?[MaximumWindows + 1];
         private int windowCount = 0;
@@ -28,7 +33,6 @@ namespace WillCDev.Services.WindowService
                 {
                     windows[emptyIndex] = window;
                     window.ID = emptyIndex;
-                    window.WindowTitle = ProgramWindow.GetProgramTitle(window.Program);
                     windowCount++;
                     await NotifySubscribers();
                 } else
@@ -87,7 +91,7 @@ namespace WillCDev.Services.WindowService
 
         private async Task<bool> CheckExistingWindow(ProgramWindow window)
         {
-            var existingWindow = windows.FirstOrDefault(w => w?.Program == window.Program);
+            var existingWindow = windows.FirstOrDefault(w => w?.ProgramId == window.ProgramId);
             if (existingWindow is not null)
             {
                 await NotifyBringToFrontSubscribers(existingWindow.ID);
@@ -100,8 +104,8 @@ namespace WillCDev.Services.WindowService
             windows[MaximumWindows] = new ProgramWindow
             {
                 ID = MaximumWindows,
-                WindowTitle = ProgramWindow.GetProgramTitle(EProgram.WindowLimitReached),
-                Program = EProgram.WindowLimitReached
+                WindowTitle = "Window Limit Reached",
+                ProgramId = _programRegistry.GetProgramIdByProgramName("Window Limit Reached")
             };
             await NotifySubscribers();
         }

@@ -1,6 +1,7 @@
 using WillCDev.Components;
 using WillCDev.Services.ApplicationService;
 using WillCDev.Services.DesktopService;
+using WillCDev.Services.ProgramService;
 using WillCDev.Services.TaskbarService;
 using WillCDev.Services.WindowService;
 
@@ -15,6 +16,8 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.RegisterProgramsFromAssembly();
 
 var app = builder.Build();
 

@@ -3,12 +3,11 @@
 @using WillCDev.Components.Programs
 @using WillCDev.Components.UI
 @using WillCDev.Services.ApplicationService
-@using WillCDev.Services.TaskbarService
-@using WillCDev.Services.WindowService
+@using WillCDev.Services.ProgramService
 
-@if (WindowSetting != null && WindowSetting.Program != EProgram.StartMenu)
+@if (WindowSetting != null && ProgramAttribute?.ComponentType != typeof(StartMenu))
 {
-    <section id="@WindowSetting.ID" class="window-frame draggable">
+    <section id="@WindowSetting.ID" class="window-frame init draggable">
         <div class="title-bar">
             <div class="window-icon">
                 <Icon IconName="Application Window" />
@@ -21,25 +20,9 @@
                 </div>
         </div>
         <div class="window-body" >
-            @if (WindowSetting?.Program == EProgram.AboutMe)
+            @if (ProgramAttribute != null)
             {
-                <AboutMe/>
-            }
-            else if (WindowSetting?.Program == EProgram.Projects)
-            {
-                <Projects/>
-            }
-            else if (WindowSetting?.Program == EProgram.Contact)
-            {
-                <ContactMe/>
-            }
-            else if (WindowSetting?.Program == EProgram.WindowLimitReached)
-            {
-                <WindowLimitReached />
-            }
-            else if (WindowSetting?.Program == EProgram.Settings)
-            {
-                <Settings />
+                <DynamicComponent Type="@ProgramAttribute.ComponentType" />
             }
             else
             {
@@ -47,7 +30,7 @@
             }
         </div>
     </section>
-} else if (WindowSetting != null && WindowSetting.Program == EProgram.StartMenu)
+} else if (WindowSetting != null && ProgramAttribute?.ComponentType == typeof(StartMenu))
 {
     <section class="window-click-catcher" @onclick="OnCloseWindow">
         <div class="start-menu-frame">
@@ -60,10 +43,23 @@
     [Inject]
     public required IApplicationService ApplicationService { get; set; }
 
+    [Inject]
+    public required IProgramRegistry ProgramRegistry { get; set; }
+
     [Parameter]
     public ProgramWindow? WindowSetting { get; set; }
 
     public string WindowTitle { get; set; } = "Window Title";
+
+    private ProgramAttribute? ProgramAttribute { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (WindowSetting != null)
+        {
+            ProgramAttribute = ProgramRegistry.GetProgram(WindowSetting.ProgramId);
+        }
+    }
 
     private async Task OnCloseWindow()
     {

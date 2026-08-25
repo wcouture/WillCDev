@@ -2,11 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 0.25em;
+
     padding: 0.25em;
     box-sizing: border-box;
-    max-width: 5em;
-    max-height: 6em;
+    
+    width: 5em;
+    height: 6em;
 }
 
 .icon-container:hover {
@@ -16,12 +19,15 @@
 }
 
 .icon-wrapper {
-    max-width: 3em;
-    max-height: 3em;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 .icon-label {
     text-align: center;
     text-shadow: 0px 0px 5px white;
+    
+    padding: 0;
+    margin: 0;
 
 }

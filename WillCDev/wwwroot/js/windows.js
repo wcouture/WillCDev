@@ -1,6 +1,13 @@
 function InitDraggables() {
     $(".draggable").draggable();
 
+    $('.draggable').toArray().forEach(element => {
+        let elmnt = $(element).element;
+        let width = elmnt.getBoundingClientRect().width;
+        $(element).removeClass("init");
+        $(element).css('width', width);
+    });
+
     $(".draggable").on("mousedown", function () {
         $(".draggable").toArray().forEach(element => {
             let zIndex = $(element).css("z-index");

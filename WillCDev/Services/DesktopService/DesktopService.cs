@@ -4,14 +4,14 @@ namespace WillCDev.Services.DesktopService
 {
     public class DesktopService : IDesktopService
     {
-        private const int MaxShortcuts = 10;
+        private const int MaxShortcuts = 32;
 
         private List<DesktopShortcut> _shortcuts = new();
         private List<Func<List<DesktopShortcut>, Task>> _subscribers = new();
 
         public async Task AddDesktopShortcut(DesktopShortcut shortcut)
         {
-            var existingShortcut = _shortcuts.FirstOrDefault(s => s.ID == shortcut.ID || s.AppId == shortcut.AppId);
+            var existingShortcut = _shortcuts.FirstOrDefault(s => s.AppId == shortcut.AppId);
             if (_shortcuts.Count < MaxShortcuts && existingShortcut == null)
             {
                 _shortcuts.Add(shortcut);

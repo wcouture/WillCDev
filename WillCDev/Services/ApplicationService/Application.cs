@@ -1,4 +1,4 @@
-﻿using WillCDev.Components.Window;
+﻿using WillCDev.Components.Programs;
 
 namespace WillCDev.Services.ApplicationService
 {
@@ -8,6 +8,6 @@ namespace WillCDev.Services.ApplicationService
         public string Name { get; set; } = string.Empty;
         public string IconName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public EProgram Program { get; set; } = EProgram.None;
+        public int ProgramId { get; set; } = -1;
     }
 }

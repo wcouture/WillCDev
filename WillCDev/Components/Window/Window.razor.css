@@ -1,15 +1,15 @@
 ﻿.window-frame {
     border: 1px solid black;
     background-color: white;
-
     position: fixed;
-    top: calc(50% - 20em);
-    left: calc(50% - 35em);
+    top: calc(50% - 25dvh);
+    left: calc(50% - 25dvw);
     z-index: 1000;
-
-    width: 70em;
-    height: 40em;
 }
+    .window-frame.init {
+        width: 50dvw;
+        height: 50dvh;
+    }
 
 .window-body {
     padding: 10px;

@@ -5,7 +5,7 @@ namespace WillCDev.Services.TaskbarService
 {
     public class TaskbarService : ITaskbarService
     {
-        private const int MaximumTaskBarPrograms = 16;
+        private const int MaximumTaskBarPrograms = 32;
         private List<TaskBarProgram> taskBarPrograms { get; set; } = new List<TaskBarProgram>(MaximumTaskBarPrograms);
         private List<Func<List<TaskBarProgram>, Task>> subscribers = new List<Func<List<TaskBarProgram>, Task>>();
 
@@ -29,7 +29,10 @@ namespace WillCDev.Services.TaskbarService
 
             if (taskBarPrograms.Count < MaximumTaskBarPrograms)
             {
-                taskBarPrograms.Add(taskBarProgram);
+                if (taskBarProgram.StartMenu)
+                    taskBarPrograms = taskBarPrograms.Prepend(taskBarProgram).ToList();
+                else
+                    taskBarPrograms.Add(taskBarProgram);
             }
             else
             {
