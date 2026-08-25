@@ -1,5 +1,6 @@
 ﻿@using WillCDev.Components.UI
 @using WillCDev.Components.Window
+@using WillCDev.Services.ApplicationService
 @using WillCDev.Services.WindowService
 
 <section class="icon-container" @onclick="OpenProgram">
@@ -14,14 +15,10 @@
     public required DesktopShortcut Shortcut { get; set; }
 
     [Inject]
-    public required IWindowService WindowService { get; set; }
+    public required IApplicationService ApplicationService { get; set; }
 
     private async Task OpenProgram()
     {
-        var program = new ProgramWindow()
-        {
-            Program = Shortcut.Program,
-        };
-        await WindowService.OpenWindow(program);
+        await ApplicationService.StartApplication(Shortcut.AppId);
     }
 }

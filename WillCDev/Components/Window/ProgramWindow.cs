@@ -2,6 +2,7 @@
 {
     public enum EProgram
     {
+        None = -1,
         StartMenu,
         Settings,
         AboutMe,
@@ -17,6 +18,7 @@
         public int ID { get; set; } = 0;
         public string WindowTitle { get; set; } = "Window Title";
         public EProgram Program { get; set; } = EProgram.StartMenu;
+        public int AppId { get; set; } = -1;
 
         public static string GetProgramTitle(EProgram program)
         {

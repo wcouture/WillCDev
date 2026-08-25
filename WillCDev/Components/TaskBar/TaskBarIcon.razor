@@ -1,11 +1,12 @@
 ﻿@using WillCDev.Components.UI
 @using WillCDev.Components.Window
+@using WillCDev.Services.ApplicationService
 @using WillCDev.Services.TaskbarService
 @using WillCDev.Services.WindowService
 
 <div class="icon-container @(IsActive ? "active" : "")" @onclick="OpenWindow">
-    <div class="@(StartMenu ? "task-icon start" : "task-icon")">
-        <Icon IconName="@IconName" IconSize="@IconSizeRel" />
+    <div class="@(_isStartMenu ? "task-icon start" : "task-icon")">
+        <Icon IconName="@IconName" IconSize="@_iconSizeRel" />
         @if (IconText?.Length > 0)
         {
             <p class="icon-text">@IconText</p>
@@ -14,8 +15,6 @@
 </div>
 
 @code {
-    [Parameter]
-    public bool StartMenu { get; set; } = false;
 
     [Parameter]
     public string IconName { get; set; } = "Internet Explorer 6";
@@ -24,28 +23,26 @@
     public string IconText { get; set; } = "";
 
     [Parameter]
-    public int IconSizeRel { get; set; } = 100;
-
-    [Parameter]
-    public EProgram Program { get; set; } = EProgram.AboutMe;
+    public int AppId { get; set; } = -1;
 
     [Parameter]
     public bool IsActive { get; set; } = false;
 
     [Inject]
-    private IWindowService WindowService { get; set; } = default!;
+    public required IApplicationService ApplicationService { get; set; }
 
-    [Inject]
-    private ITaskbarService TaskbarService { get; set; } = default!;
+    private bool _isStartMenu { get; set; } = false;
+    private int _iconSizeRel { get; set; } = 100;
 
-    private async Task OpenWindow()
+    private async Task OpenWindow() => await ApplicationService.StartApplication(AppId);
+
+    protected override void OnInitialized()
     {
-        ProgramWindow window = new ProgramWindow
+        if (IconName == "start")
         {
-            WindowTitle = IconText,
-            Program = Program
-        };
-        await WindowService.OpenWindow(window);
-        await TaskbarService.ToggleTaskBarProgramActiveState(Program, true);
+            _isStartMenu = true;
+            _iconSizeRel = 70;
+            IconText = "START";
+        }
     }
 }

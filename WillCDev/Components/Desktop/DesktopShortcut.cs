@@ -7,6 +7,6 @@ namespace WillCDev.Components.Desktop
         public int ID { get; set; } = 0;
         public string Label { get; set; } = string.Empty;
         public string IconName { get; set; } = string.Empty;
-        public EProgram Program { get; set; } = EProgram.Settings;
+        public int AppId { get; set; } = -1;
     }
 }

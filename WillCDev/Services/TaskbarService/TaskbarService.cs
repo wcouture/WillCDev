@@ -9,19 +9,7 @@ namespace WillCDev.Services.TaskbarService
         private List<TaskBarProgram> taskBarPrograms { get; set; } = new List<TaskBarProgram>(MaximumTaskBarPrograms);
         private List<Func<List<TaskBarProgram>, Task>> subscribers = new List<Func<List<TaskBarProgram>, Task>>();
 
-        public TaskbarService()
-        {
-            taskBarPrograms = new List<TaskBarProgram>(MaximumTaskBarPrograms)
-            {
-                new TaskBarProgram { IconName = "Fax Sender Information", Program = EProgram.AboutMe, IsActive = false },
-                new TaskBarProgram { IconName = "Entire Network", Program = EProgram.Projects, IsActive = false },
-                new TaskBarProgram { IconName = "Appearance", Program = EProgram.Settings, IsActive = false },
-                new TaskBarProgram { IconName = "Command Prompt", Program = EProgram.WindowLimitReached, IsActive = false }
-            };
-
-        }
-
-        private async Task NotifySubscribers()
+        public async Task NotifySubscribers()
         {
             foreach (var subscriber in subscribers)
             {
@@ -31,7 +19,7 @@ namespace WillCDev.Services.TaskbarService
 
         public async Task AddTaskBarProgram(TaskBarProgram taskBarProgram)
         {
-            var existingProgram = taskBarPrograms.FirstOrDefault(t => t.Program == taskBarProgram.Program);
+            var existingProgram = taskBarPrograms.FirstOrDefault(t => t.AppId == taskBarProgram.AppId);
             if (existingProgram != null)
             {
                 existingProgram.IsActive = taskBarProgram.IsActive;
@@ -50,9 +38,9 @@ namespace WillCDev.Services.TaskbarService
             await NotifySubscribers();
         }
 
-        public async Task RemoveTaskBarProgram(EProgram program)
+        public async Task RemoveTaskBarProgram(int appId)
         {
-            var taskBarProgram = taskBarPrograms.FirstOrDefault(t => t.Program == program);
+            var taskBarProgram = taskBarPrograms.FirstOrDefault(t => t.AppId == appId);
             if (taskBarProgram != null)
             {
                 taskBarPrograms.Remove(taskBarProgram);
@@ -60,7 +48,7 @@ namespace WillCDev.Services.TaskbarService
             await NotifySubscribers();
         }
 
-        public void Subscribe(Func<List<TaskBarProgram>, Task> callback)
+        public void SubscribeTaskbarUpdates(Func<List<TaskBarProgram>, Task> callback)
         {
             subscribers.Add(callback);
             if (taskBarPrograms.Count > 0)
@@ -69,9 +57,9 @@ namespace WillCDev.Services.TaskbarService
             }
         }
 
-        public async Task ToggleTaskBarProgramActiveState(EProgram program, bool isActive)
+        public async Task ToggleTaskBarProgramActiveState(int appId, bool isActive)
         {
-            var taskBarProgram = taskBarPrograms.FirstOrDefault(t => t.Program == program);
+            var taskBarProgram = taskBarPrograms.FirstOrDefault(t => t.AppId == appId);
             if (taskBarProgram != null)
             {
                 taskBarProgram.IsActive = isActive;

@@ -40,9 +40,9 @@ namespace WillCDev.Services.WindowService
                 await WindowLimitReached();
             }
         }
-        public async Task CloseWindow(int windowId)
+        public async Task CloseWindow(int appId)
         {
-            var window = windows.FirstOrDefault(w => w?.ID == windowId);
+            var window = windows.FirstOrDefault(w => w?.AppId == appId);
             if (window is not null)
             {
                 var index = Array.IndexOf(windows, window);
@@ -59,7 +59,7 @@ namespace WillCDev.Services.WindowService
             await NotifySubscribers();
         }
 
-        private async Task NotifySubscribers()
+        public async Task NotifySubscribers()
         {
             foreach (var subscriber in subscribers)
             {
@@ -106,7 +106,7 @@ namespace WillCDev.Services.WindowService
             await NotifySubscribers();
         }
 
-        public void Subscribe(Func<ProgramWindow?[], Task> callback)
+        public void SubscribeWindowUpdates(Func<ProgramWindow?[], Task> callback)
         {
             subscribers.Add(callback);
         }

@@ -1,0 +1,13 @@
+﻿using WillCDev.Components.Window;
+
+namespace WillCDev.Services.ApplicationService
+{
+    public class Application
+    {
+        public int Id { get; set; } = -1;
+        public string Name { get; set; } = string.Empty;
+        public string IconName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public EProgram Program { get; set; } = EProgram.None;
+    }
+}

@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using WillCDev.Components.TaskBar
 @using WillCDev.Components.Window
+@using WillCDev.Services.ApplicationService
 @using WillCDev.Services.DesktopService
 @using WillCDev.Services.TaskbarService
 @using WillCDev.Services.WindowService
@@ -22,9 +23,9 @@
         }
     </div>
 </body>
+<TaskBar @ref="taskBar" />
 
 @code {
-    private int maxWindows = 16;
     private int windowCount = 0;
     private ProgramWindow?[] windows { get; set; } = new ProgramWindow?[16];
     private bool bringWindowToFront = false;
@@ -32,14 +33,13 @@
 
     private List<DesktopShortcut> shortcuts = new List<DesktopShortcut>();
 
+    private TaskBar taskBar { get; set; } = default!;
+
     [Inject]
     public required IJSRuntime JS { get; set; }
 
     [Inject]
-    public required IWindowService WindowService { get; set; }
-
-    [Inject]
-    public required IDesktopService DesktopService { get; set; }
+    public required IApplicationService ApplicationService { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -50,16 +50,19 @@
             bringWindowToFront = false;
             windowToBringToFrontId = -1;
         }
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
-        WindowService.Subscribe(UpdateWindows);
-        WindowService.SubscribeBringToFront(BringWindowToFront);
-        maxWindows = WindowService.GetMaxWindows();
+        if (firstRender)
+        {
+            await ApplicationService.Init();
+            ApplicationService.SubscribeToBringToFrontWindows(BringWindowToFront);
+            ApplicationService.SubscribeToUpdatesDesktop(UpdateDesktopIcons);
+            ApplicationService.SubscribeToUpdatesWindows(UpdateWindows);
 
-        DesktopService.SubscribeToDesktopEvents(UpdateDesktopIcons);
-        await DesktopService.AddDesktopShortcut(new DesktopShortcut { ID = 1, Label = "Settings", IconName = "Briefcase", Program = EProgram.Settings });
+            if (taskBar != null)
+                ApplicationService.SubscribeToUpdatesTaskBar(taskBar.UpdateTaskBarPrograms);
+
+            await ApplicationService.RefreshApplicationData();
+        }
     }
 
     private async Task ResetDraggables() {

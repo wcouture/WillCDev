@@ -1,4 +1,5 @@
 using WillCDev.Components;
+using WillCDev.Services.ApplicationService;
 using WillCDev.Services.DesktopService;
 using WillCDev.Services.TaskbarService;
 using WillCDev.Services.WindowService;
@@ -6,9 +7,10 @@ using WillCDev.Services.WindowService;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
-builder.Services.AddSingleton<IWindowService, WindowService>();
-builder.Services.AddSingleton<ITaskbarService, TaskbarService>();
-builder.Services.AddSingleton<IDesktopService, DesktopService>();
+builder.Services.AddScoped<IWindowService, WindowService>();
+builder.Services.AddScoped<ITaskbarService, TaskbarService>();
+builder.Services.AddScoped<IDesktopService, DesktopService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

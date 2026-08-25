@@ -1,24 +1,15 @@
 ﻿@using WillCDev.Components.Window
 @using WillCDev.Services.TaskbarService
 <div class="task-bar-body">
-    <StartMenuIcon/>
     @foreach (var taskBarProgram in taskBarPrograms)
     {
-        <TaskBarIcon IconName="@taskBarProgram.IconName" Program="@taskBarProgram.Program" IsActive="@taskBarProgram.IsActive"/>
+        <TaskBarIcon IconName="@taskBarProgram.IconName" AppId="@taskBarProgram.AppId" IsActive="@taskBarProgram.IsActive"/>
     }
 </div>
 @code {
     private List<TaskBarProgram> taskBarPrograms = new List<TaskBarProgram>();
 
-    [Inject]
-    public required ITaskbarService TaskbarService { get; set; }
-
-    protected override void OnInitialized()
-    {
-        TaskbarService.Subscribe(UpdateTaskBarPrograms);
-    }
-
-    private async Task UpdateTaskBarPrograms(List<TaskBarProgram> updatedTaskBarPrograms)
+    public async Task UpdateTaskBarPrograms(List<TaskBarProgram> updatedTaskBarPrograms)
     {
         taskBarPrograms = updatedTaskBarPrograms;
         await InvokeAsync(StateHasChanged);
