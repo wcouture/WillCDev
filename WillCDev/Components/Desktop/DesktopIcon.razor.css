@@ -10,7 +10,7 @@
 }
 
 .icon-container:hover {
-    border-radius: 5px;
+    border-radius: 2px;
     background-color: #b6dbff46;
     cursor: pointer;
 }

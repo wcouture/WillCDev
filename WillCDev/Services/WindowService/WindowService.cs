@@ -5,9 +5,8 @@ using WillCDev.Services.TaskbarService;
 namespace WillCDev.Services.WindowService
 {
     
-    public class WindowService(ITaskbarService taskbarService) : IWindowService
+    public class WindowService : IWindowService
     {
-        private readonly ITaskbarService _taskbarService = taskbarService;
         private const int MaximumWindows = 2;
         public ProgramWindow?[] Windows { get => windows; }
         private ProgramWindow?[] windows {get; set;} = new ProgramWindow?[MaximumWindows + 1];
@@ -27,7 +26,6 @@ namespace WillCDev.Services.WindowService
                 var emptyIndex = Array.FindIndex(windows, w => w is null);
                 if (emptyIndex >= 0)
                 {
-                    await _taskbarService.AddTaskBarProgram(new TaskBarProgram { IconName = window.WindowTitle, Program = window.Program, IsActive = true });
                     windows[emptyIndex] = window;
                     window.ID = emptyIndex;
                     window.WindowTitle = ProgramWindow.GetProgramTitle(window.Program);
@@ -50,7 +48,6 @@ namespace WillCDev.Services.WindowService
                 var index = Array.IndexOf(windows, window);
                 if (index >= 0)
                 {
-                    await _taskbarService.ToggleTaskBarProgramActiveState(window.Program, false);
                     windows[index] = null;
                     windowCount--;
                     if (index == MaximumWindows)
