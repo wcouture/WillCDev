@@ -1,9 +1,12 @@
 using WillCDev.Components;
+using WillCDev.Services.TaskbarService;
+using WillCDev.Services.WindowService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddSingleton<IWindowService, WindowService>();
+builder.Services.AddSingleton<ITaskbarService, TaskbarService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

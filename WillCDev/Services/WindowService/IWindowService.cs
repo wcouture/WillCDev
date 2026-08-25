@@ -1,10 +1,15 @@
 using WillCDev.Components.Window;
 
-public interface IWindowService
+namespace WillCDev.Services.WindowService
 {
-    int GetMaxWindows();
-    int GetWindowCount();
-    Task OpenWindow(ProgramWindow window);
-    Task CloseWindow(int windowId);
-    void Subscribe(Func<ProgramWindow?[], Task> callback);
+    public interface IWindowService
+    {
+        int GetMaxWindows();
+        int GetWindowCount();
+        Task OpenWindow(ProgramWindow window);
+        Task CloseWindow(int windowId);
+        void Subscribe(Func<ProgramWindow?[], Task> callback);
+        void SubscribeBringToFront(Func<int, Task> callback);
+    }
+    
 }

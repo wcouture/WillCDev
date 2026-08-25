@@ -1,6 +1,9 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @using WillCDev.Components.Window
+@using WillCDev.Components.TaskBar
+@using WillCDev.Services.WindowService
+@using WillCDev.Services.TaskbarService
 
 <PageTitle>Desktop</PageTitle>
 
@@ -19,6 +22,8 @@
     private int maxWindows = 16;
     private int windowCount = 0;
     private ProgramWindow?[] windows { get; set; } = new ProgramWindow?[16];
+    private bool bringWindowToFront = false;
+    private int windowToBringToFrontId = -1;
 
     [Inject]
     public required IJSRuntime JS { get; set; }
@@ -29,11 +34,18 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await ResetDraggables();
+        if (bringWindowToFront && windowToBringToFrontId != -1)
+        {
+            await JS.InvokeVoidAsync("BringToFront", windowToBringToFrontId);
+            bringWindowToFront = false;
+            windowToBringToFrontId = -1;
+        }
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         WindowService.Subscribe(UpdateWindows);
+        WindowService.SubscribeBringToFront(BringWindowToFront);
         maxWindows = WindowService.GetMaxWindows();
     }
 
@@ -47,4 +59,15 @@
         windowCount = windows.Count(w => w != null);
         await InvokeAsync(StateHasChanged);
     }
+
+    private async Task BringWindowToFront(int windowId)
+    {
+        var windowToBringToFront = windows.FirstOrDefault(w => w?.ID == windowId);
+        if (windowToBringToFront != null){
+            bringWindowToFront = true;
+            windowToBringToFrontId = windowId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 }
+    

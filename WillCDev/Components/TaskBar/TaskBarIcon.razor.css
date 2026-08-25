@@ -1,24 +1,38 @@
-﻿.task-icon {
+﻿.icon-container {
+    height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+}
+    .icon-container:hover {
+        cursor: pointer;
+        background-color: rgba(0,0,0,0.2);
+        
+        transition: 0.1s ease-in-out;
+    }
+
+.icon-container.active {
+    background-image: radial-gradient(rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.25) 70%);
+    border-radius: 5px;
+    transition: 0.1s ease-in-out;
+}
+
+.task-icon {
     width: 1.25em;
     height: 1.25em;
     background-color: rgba(0,0,0,0.0);
     border-radius: 8px;
+    margin: 0 0.25em;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.3s ease-in-out;
+    
 }
-
-    .task-icon:hover {
-        cursor: pointer;
-        background-color: rgba(0,0,0,0.2);
-        transform: translateY(-5px);
-        transition: 0.1s ease-in-out;
-    }
-
     .task-icon.start {
         border-radius: 0 8px 8px 0;
         border: 1px solid #053B0D;
+        margin: 0;
         padding: 0 5px;
         width: min-content;
         height: 2.1em;

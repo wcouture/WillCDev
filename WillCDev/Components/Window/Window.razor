@@ -1,10 +1,13 @@
 ﻿
 @rendermode InteractiveServer
+@using WillCDev.Components.Programs
 @using WillCDev.Components.UI
+@using WillCDev.Services.WindowService
+@using WillCDev.Services.TaskbarService
 
-@if (WindowSetting != null && WindowSetting.Program != Programs.StartMenu)
+@if (WindowSetting != null && WindowSetting.Program != EProgram.StartMenu)
 {
-    <section class="window-frame draggable">
+    <section id="@WindowSetting.ID" class="window-frame draggable">
         <div class="title-bar">
             <div class="window-icon">
                 <Icon IconName="Application Window" />
@@ -17,21 +20,25 @@
                 </div>
         </div>
         <div class="window-body" >
-            @if (WindowSetting?.Program == Programs.AboutMe)
+            @if (WindowSetting?.Program == EProgram.AboutMe)
             {
-                @("About Me coming soon!")
+                <AboutMe/>
             }
-            else if (WindowSetting?.Program == Programs.Projects)
+            else if (WindowSetting?.Program == EProgram.Projects)
             {
-                @("Projects coming soon!")
+                <Projects/>
             }
-            else if (WindowSetting?.Program == Programs.Contact)
+            else if (WindowSetting?.Program == EProgram.Contact)
             {
-                @("Contact form coming soon!")
+                <ContactMe/>
             }
-            else if (WindowSetting?.Program == Programs.WindowLimitReached)
+            else if (WindowSetting?.Program == EProgram.WindowLimitReached)
             {
                 <WindowLimitReached />
+            }
+            else if (WindowSetting?.Program == EProgram.Settings)
+            {
+                <Settings />
             }
             else
             {
@@ -39,11 +46,11 @@
             }
         </div>
     </section>
-} else if (WindowSetting != null && WindowSetting.Program == Programs.StartMenu)
+} else if (WindowSetting != null && WindowSetting.Program == EProgram.StartMenu)
 {
     <section class="window-click-catcher" @onclick="OnCloseWindow">
         <div class="start-menu-frame">
-            
+            <StartMenu />
         </div>
     </section>
 }
@@ -52,16 +59,20 @@
     [Inject]
     private IWindowService WindowService { get; set; } = default!;
 
+    [Inject]
+    private ITaskbarService TaskbarService { get; set; } = default!;
+
     [Parameter]
     public ProgramWindow? WindowSetting { get; set; }
 
     public string WindowTitle { get; set; } = "Window Title";
 
-    private void OnCloseWindow()
+    private async Task OnCloseWindow()
     {
         if (WindowSetting != null)
         {
-            WindowService.CloseWindow(WindowSetting.ID);
+            await WindowService.CloseWindow(WindowSetting.ID);
+            await TaskbarService.ToggleTaskBarProgramActiveState(WindowSetting.Program, false);
         }
     }
 }

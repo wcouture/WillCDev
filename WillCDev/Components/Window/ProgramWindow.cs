@@ -1,6 +1,6 @@
 ﻿namespace WillCDev.Components.Window
 {
-    public enum Programs
+    public enum EProgram
     {
         StartMenu,
         Settings,
@@ -16,18 +16,18 @@
     {
         public int ID { get; set; } = 0;
         public string WindowTitle { get; set; } = "Window Title";
-        public Programs Program { get; set; } = Programs.StartMenu;
+        public EProgram Program { get; set; } = EProgram.StartMenu;
 
-        public static string GetProgramTitle(Programs program)
+        public static string GetProgramTitle(EProgram program)
         {
             return program switch
             {
-                Programs.StartMenu => "Start Menu",
-                Programs.Settings => "Settings",
-                Programs.AboutMe => "About Me",
-                Programs.Projects => "Projects",
-                Programs.Contact => "Contact",
-                Programs.WindowLimitReached => "Window Limit Reached",
+                EProgram.StartMenu => "Start Menu",
+                EProgram.Settings => "Settings",
+                EProgram.AboutMe => "About Me",
+                EProgram.Projects => "Projects",
+                EProgram.Contact => "Contact",
+                EProgram.WindowLimitReached => "Window Limit Reached",
                 _ => "Unknown Program"
             };
         }

@@ -1,12 +1,16 @@
 ﻿@using WillCDev.Components.UI
 @using WillCDev.Components.Window
+@using WillCDev.Services.TaskbarService
+@using WillCDev.Services.WindowService
 
-<div class="@(StartMenu ? "task-icon start" : "task-icon")" @onclick="OpenWindow">
-    <Icon IconName="@IconName" IconSize="@IconSizeRel" />
-    @if (IconText?.Length > 0)
-    {
-        <p class="icon-text">@IconText</p>
-    }
+<div class="icon-container @(IsActive ? "active" : "")">
+    <div class="@(StartMenu ? "task-icon start" : "task-icon")" @onclick="OpenWindow">
+        <Icon IconName="@IconName" IconSize="@IconSizeRel" />
+        @if (IconText?.Length > 0)
+        {
+            <p class="icon-text">@IconText</p>
+        }
+    </div>
 </div>
 
 @code {
@@ -23,10 +27,16 @@
     public int IconSizeRel { get; set; } = 100;
 
     [Parameter]
-    public Programs Program { get; set; } = Programs.AboutMe;
+    public EProgram Program { get; set; } = EProgram.AboutMe;
+
+    [Parameter]
+    public bool IsActive { get; set; } = false;
 
     [Inject]
     private IWindowService WindowService { get; set; } = default!;
+
+    [Inject]
+    private ITaskbarService TaskbarService { get; set; } = default!;
 
     private async Task OpenWindow()
     {
