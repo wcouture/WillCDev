@@ -3,11 +3,12 @@
     background-color: white;
 
     position: fixed;
-    top: 10vh;
-    left: 10vw;
+    top: calc(50% - 20em);
+    left: calc(50% - 35em);
+    z-index: 1000;
 
-    width: 800px;
-    height: 600px;
+    width: 70em;
+    height: 40em;
 }
 
 .window-body {
@@ -51,4 +52,27 @@
     background-color: #f00;
     cursor: pointer;
     transition: 0.1s ease-in-out;
+}
+
+
+.start-menu-frame {
+    border: 1px solid black;
+    background-color: white;
+
+    position: fixed;
+    bottom: 2em;
+    left: 0;
+    z-index: 10002;
+
+    width: 20em;
+    height: 30em;
+}
+
+.window-click-catcher {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
 }

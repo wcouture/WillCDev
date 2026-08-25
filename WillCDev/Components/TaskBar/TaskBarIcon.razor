@@ -1,6 +1,7 @@
 ﻿@using WillCDev.Components.UI
+@using WillCDev.Components.Window
 
-<div class="@(StartMenu ? "task-icon start" : "task-icon")">
+<div class="@(StartMenu ? "task-icon start" : "task-icon")" @onclick="OpenWindow">
     <Icon IconName="@IconName" IconSize="@IconSizeRel" />
     @if (IconText?.Length > 0)
     {
@@ -20,4 +21,20 @@
 
     [Parameter]
     public int IconSizeRel { get; set; } = 100;
+
+    [Parameter]
+    public Programs Program { get; set; } = Programs.AboutMe;
+
+    [Inject]
+    private IWindowService WindowService { get; set; } = default!;
+
+    private async Task OpenWindow()
+    {
+        ProgramWindow window = new ProgramWindow
+        {
+            WindowTitle = IconText,
+            Program = Program
+        };
+        await WindowService.OpenWindow(window);
+    }
 }

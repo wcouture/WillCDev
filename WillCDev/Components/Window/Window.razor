@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @using WillCDev.Components.UI
 
-@if (WindowSetting != null)
+@if (WindowSetting != null && WindowSetting.Program != Programs.StartMenu)
 {
     <section class="window-frame draggable">
         <div class="title-bar">
@@ -10,27 +10,50 @@
                 <Icon IconName="Application Window" />
                 </div>
             <div class="window-title">
-                @WindowSetting?.WindowTitle | @WindowSetting?.Program.ToString()
+                @WindowSetting?.WindowTitle
                 </div>
             <div class="window-exit" @onclick="OnCloseWindow">
                 X
                 </div>
         </div>
         <div class="window-body" >
-            @ChildContent
+            @if (WindowSetting?.Program == Programs.AboutMe)
+            {
+                @("About Me coming soon!")
+            }
+            else if (WindowSetting?.Program == Programs.Projects)
+            {
+                @("Projects coming soon!")
+            }
+            else if (WindowSetting?.Program == Programs.Contact)
+            {
+                @("Contact form coming soon!")
+            }
+            else if (WindowSetting?.Program == Programs.WindowLimitReached)
+            {
+                <WindowLimitReached />
+            }
+            else
+            {
+                @("Program not found")
+            }
+        </div>
+    </section>
+} else if (WindowSetting != null && WindowSetting.Program == Programs.StartMenu)
+{
+    <section class="window-click-catcher" @onclick="OnCloseWindow">
+        <div class="start-menu-frame">
+            
         </div>
     </section>
 }
 
 @code {
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Inject]
+    private IWindowService WindowService { get; set; } = default!;
 
     [Parameter]
-    public Action<int>? CloseWindow { get; set; }
-
-    [Parameter]
-    public OpenWindow? WindowSetting { get; set; }
+    public ProgramWindow? WindowSetting { get; set; }
 
     public string WindowTitle { get; set; } = "Window Title";
 
@@ -38,8 +61,7 @@
     {
         if (WindowSetting != null)
         {
-            CloseWindow?.Invoke(WindowSetting.ID);
+            WindowService.CloseWindow(WindowSetting.ID);
         }
-        StateHasChanged();
     }
 }

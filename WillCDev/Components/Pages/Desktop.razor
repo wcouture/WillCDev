@@ -5,49 +5,46 @@
 <PageTitle>Desktop</PageTitle>
 
 <body>
-    @for (int i = 0; i < maxWindows; i++)
+    @for (int i = 0; i < windows.Length; i++)
     {
-            <Window WindowSetting="windows[i]" CloseWindow="@CloseWindow">
-                <NotFound />
-            </Window>
+        <Window WindowSetting="windows[i]"/>
     }
     
     <DesktopBackground/>
+    <div class="desktop-icons">
+    </div>
 </body>
 
 @code {
     private int maxWindows = 16;
     private int windowCount = 0;
-    private OpenWindow?[] windows { get; set; } = new OpenWindow?[16];
+    private ProgramWindow?[] windows { get; set; } = new ProgramWindow?[16];
 
     [Inject]
-    public IJSRuntime JS { get; set; }
+    public required IJSRuntime JS { get; set; }
 
+    [Inject]
+    public required IWindowService WindowService { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("InitDraggables");
-        }
+        await ResetDraggables();
     }
 
     protected override void OnInitialized()
     {
-        windows[0] = new OpenWindow { ID = 0, WindowTitle = "Start Menu", Program = Programs.StartMenu };
-        windows[1] = new OpenWindow { ID = 1, WindowTitle = "Settings", Program = Programs.Settings };
-        windows[2] = new OpenWindow { ID = 2, WindowTitle = "About Me", Program = Programs.AboutMe };
-
-        windowCount = 3;
+        WindowService.Subscribe(UpdateWindows);
+        maxWindows = WindowService.GetMaxWindows();
     }
 
-    private void CloseWindow(int windowIndex)
+    private async Task ResetDraggables() {
+        await JS.InvokeVoidAsync("InitDraggables");
+    }
+
+    private async Task UpdateWindows(ProgramWindow?[] updatedWindows)
     {
-        if (windowIndex >= 0 && windowIndex < maxWindows)
-        {
-            windows[windowIndex] = null;
-            windowCount -= 1;
-            StateHasChanged();
-        }
+        windows = updatedWindows;
+        windowCount = windows.Count(w => w != null);
+        await InvokeAsync(StateHasChanged);
     }
 }

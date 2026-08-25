@@ -7,4 +7,19 @@
     background-color: black;
 }
 
+.desktop-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    
+}
+
 

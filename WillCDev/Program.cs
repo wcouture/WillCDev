@@ -2,6 +2,9 @@ using WillCDev.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services
+builder.Services.AddSingleton<IWindowService, WindowService>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
