@@ -1,6 +1,6 @@
 using WillCDev.Components.Window;
 
-namespace WillCDev.Services.WindowService
+namespace WillCDev.Services.Window
 {
     public interface IWindowService
     {

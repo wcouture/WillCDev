@@ -1,7 +1,8 @@
-﻿@using WillCDev.Services.CommandRegistry
+﻿@using WillCDev.Services.Command
+@using WillCDev.Services.Command.Commands
 <section class="terminal-container" @onclick="FocusTerminalInput">
     <div class="text-scroll-panel">
-        @foreach (var command in commands ?? [])
+        @foreach (var command in consoleLines ?? [])
         {
             <p class="console-line">@command</p>
         }
@@ -16,16 +17,20 @@
     [Inject]
     public required ICommandRegistry CommandRegistry { get; set; }
 
+    [Inject]
+    public required IServiceProvider ServiceProvider { get; set; }
+
     private TerminalInput _terminalInput { get; set; } = default!;
 
-    private List<string> commands = new();
+    private List<string> consoleLines = new();
 
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _terminalInput.RegisterInputHandler(HandleCommandSubmit);
+            await FocusTerminalInput();
         }
     }
 
@@ -36,24 +41,28 @@
 
     private async Task HandleCommandSubmit(string input)
     {
-        commands.Add(input);
-        await RouteCommand(input);
+        var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var command = parts.Length > 0 ? parts[0] : string.Empty;
+        var args = parts.Length > 1 ? parts[1..] : Array.Empty<string>();
+
+        consoleLines.Add(input);
+        await RouteCommand(command, args);
         StateHasChanged();
     }
 
-    private async Task RouteCommand(string command)
+    private async Task RouteCommand(string command, params string[] args)
     {
         var commandAttribute = CommandRegistry.GetCommand(command);
         if (commandAttribute != null)
         {
-            var handler = Activator.CreateInstance(commandAttribute.HandlerType) as CommandHandlerBase;
+            var handler = ActivatorUtilities.CreateInstance(ServiceProvider, commandAttribute.HandlerType) as CommandHandlerBase;
             if (handler != null)
             {
-                await handler.HandleCommand(commands, command);
+                await handler.HandleCommand(consoleLines, args);
             }
         } else
         {
-            commands.Add("Unrecognized Command");
+            consoleLines.Add("Unrecognized Command");
         }
     }
 }

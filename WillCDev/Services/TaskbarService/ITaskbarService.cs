@@ -1,7 +1,7 @@
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
 
-namespace WillCDev.Services.TaskbarService
+namespace WillCDev.Services.Taskbar
 {
     public interface ITaskbarService
     {

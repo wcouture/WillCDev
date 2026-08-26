@@ -1,8 +1,9 @@
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
 
-namespace WillCDev.Services.TaskbarService
+namespace WillCDev.Services.Taskbar
 {
+    [Service(typeof(ITaskbarService),ServiceType.Scoped)]
     public class TaskbarService : ITaskbarService
     {
         private const int MaximumTaskBarPrograms = 32;

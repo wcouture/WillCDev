@@ -1,8 +1,8 @@
 ﻿@using WillCDev.Components.UI
 @using WillCDev.Components.Window
-@using WillCDev.Services.ApplicationService
-@using WillCDev.Services.TaskbarService
-@using WillCDev.Services.WindowService
+@using WillCDev.Services.Application
+@using WillCDev.Services.Taskbar
+@using WillCDev.Services.Window
 
 <div class="icon-container @(IsActive ? "active" : "")" @onclick="OpenWindow">
     <div class="@(_isStartMenu ? "task-icon start" : "task-icon")">

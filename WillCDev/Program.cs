@@ -1,23 +1,23 @@
 using WillCDev.Components;
-using WillCDev.Services.ApplicationService;
-using WillCDev.Services.CommandRegistry;
-using WillCDev.Services.DesktopService;
-using WillCDev.Services.ProgramRegistry;
-using WillCDev.Services.TaskbarService;
-using WillCDev.Services.WindowService;
+using WillCDev.Services;
+using WillCDev.Services.Application;
+using WillCDev.Services.Command;
+using WillCDev.Services.Desktop;
+using WillCDev.Services.Program;
+using WillCDev.Services.Taskbar;
+using WillCDev.Services.Window;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
-builder.Services.AddScoped<IWindowService, WindowService>();
-builder.Services.AddScoped<ITaskbarService, TaskbarService>();
-builder.Services.AddScoped<IDesktopService, DesktopService>();
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add services
+builder.Services.RegisterServicesFromAssembly();
+// Load programs and commands
 builder.Services.RegisterProgramsFromAssembly();
 builder.Services.RegisterCommandsFromAssembly();
 

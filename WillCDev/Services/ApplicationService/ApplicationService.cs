@@ -2,13 +2,14 @@
 using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
-using WillCDev.Services.DesktopService;
-using WillCDev.Services.ProgramRegistry;
-using WillCDev.Services.TaskbarService;
-using WillCDev.Services.WindowService;
+using WillCDev.Services.Desktop;
+using WillCDev.Services.Program;
+using WillCDev.Services.Taskbar;
+using WillCDev.Services.Window;
 
-namespace WillCDev.Services.ApplicationService
+namespace WillCDev.Services.Application
 {
+    [Service(typeof(IApplicationService),ServiceType.Scoped)]
     public class ApplicationService(IWindowService windowService, ITaskbarService taskbarService, IDesktopService desktopService, IProgramRegistry programRegistry) : IApplicationService
     {
         private readonly IWindowService _windowService = windowService;

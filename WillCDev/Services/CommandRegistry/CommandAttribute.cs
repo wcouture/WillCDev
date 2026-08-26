@@ -1,4 +1,6 @@
-﻿namespace WillCDev.Services.CommandRegistry
+﻿using WillCDev.Services.Command.Commands;
+
+namespace WillCDev.Services.Command
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class CommandAttribute : Attribute

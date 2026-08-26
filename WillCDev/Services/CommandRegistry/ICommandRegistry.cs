@@ -1,4 +1,4 @@
-﻿namespace WillCDev.Services.CommandRegistry
+﻿namespace WillCDev.Services.Command
 {
     public interface ICommandRegistry
     {

@@ -2,7 +2,7 @@
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
 
-namespace WillCDev.Services.ApplicationService
+namespace WillCDev.Services.Application
 {
     public interface IApplicationService
     {

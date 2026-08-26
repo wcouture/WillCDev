@@ -1,4 +1,4 @@
-﻿namespace WillCDev.Services.CommandRegistry.Commands
+﻿namespace WillCDev.Services.Command.Commands
 {
     [Command("clear")]
     public class Clear : CommandHandlerBase

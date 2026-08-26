@@ -1,6 +1,6 @@
-﻿namespace WillCDev.Services.CommandRegistry
+﻿namespace WillCDev.Services.Command
 {
-    public class CommandRegistry : ICommandRegistry
+    public class CommandRegistry() : ICommandRegistry
     {
         private readonly Dictionary<string, CommandAttribute> _commands = new();
 

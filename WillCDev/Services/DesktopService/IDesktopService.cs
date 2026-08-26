@@ -1,6 +1,6 @@
 ﻿using WillCDev.Components.Desktop;
 
-namespace WillCDev.Services.DesktopService
+namespace WillCDev.Services.Desktop
 {
     public interface IDesktopService
     {

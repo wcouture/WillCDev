@@ -1,6 +1,6 @@
 ﻿using WillCDev.Components.Programs;
 
-namespace WillCDev.Services.ApplicationService
+namespace WillCDev.Services.Application
 {
     public class Application
     {

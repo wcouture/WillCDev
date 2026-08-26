@@ -1,7 +1,8 @@
 ﻿using WillCDev.Components.Desktop;
 
-namespace WillCDev.Services.DesktopService
+namespace WillCDev.Services.Desktop
 {
+    [Service(typeof(IDesktopService), ServiceType.Scoped)]
     public class DesktopService : IDesktopService
     {
         private const int MaxShortcuts = 32;

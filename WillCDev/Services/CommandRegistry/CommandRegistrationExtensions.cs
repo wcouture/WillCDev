@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Reflection;
 using WillCDev.Components;
+using WillCDev.Services.Command.Commands;
 
-namespace WillCDev.Services.CommandRegistry
+namespace WillCDev.Services.Command
 {
     public static class CommandRegistrationExtensions
     {

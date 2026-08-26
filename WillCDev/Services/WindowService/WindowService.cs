@@ -3,11 +3,11 @@ using System.Xml.Serialization;
 using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
-using WillCDev.Services.ProgramRegistry;
-using WillCDev.Services.TaskbarService;
-namespace WillCDev.Services.WindowService
+using WillCDev.Services.Program;
+using WillCDev.Services.Taskbar;
+namespace WillCDev.Services.Window
 {
-    
+    [Service(typeof(IWindowService), ServiceType.Scoped)]
     public class WindowService(IProgramRegistry programRegistry) : IWindowService
     {
         private readonly IProgramRegistry _programRegistry = programRegistry;
