@@ -32,11 +32,10 @@
     </section>
 } else if (WindowSetting != null && ProgramAttribute?.ComponentType == typeof(StartMenu))
 {
-    <section class="window-click-catcher" @onclick="OnCloseWindow">
         <div class="start-menu-frame">
             <StartMenu />
         </div>
-    </section>
+        <section class="window-click-catcher" @onclick="OnCloseWindow"></section>
 }
 
 @code {

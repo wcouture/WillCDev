@@ -6,21 +6,22 @@
 
 <PageTitle>Porfolio-XP</PageTitle>
 
-<body>
-    @for (int i = 0; i < windows.Length; i++)
-    {
-        <Window WindowSetting="windows[i]"/>
-    }
-    
+<section class="desktop-container">
     <DesktopBackground/>
-    <div class="desktop-icons">
-        @foreach (var shortcut in shortcuts)
+    <div class="desktop-windowspace">
+        @for (int i = 0; i < windows.Length; i++)
         {
-            <DesktopIcon Shortcut="shortcut" />
+            <Window WindowSetting="windows[i]"/>
         }
+        <div class="desktop-icons">
+            @foreach (var shortcut in shortcuts)
+            {
+                <DesktopIcon Shortcut="shortcut" />
+            }
+        </div>
     </div>
-</body>
-<TaskBar @ref="taskBar" />
+    <TaskBar @ref="taskBar" />
+</section>
 
 @code {
     private int windowCount = 0;

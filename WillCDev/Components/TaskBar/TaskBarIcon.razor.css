@@ -39,6 +39,7 @@
         background: #16c436;
         background: radial-gradient(circle, rgba(22, 196, 54, 1) 18%, rgba(14, 158, 41, 1) 77%);
         box-shadow: 1px 0px 5px 2px rgba(0,0,0,0.3);
+        anchor-name: --start-menu;
     }
 
         .task-icon.start:hover {
@@ -58,5 +59,31 @@
     font-style: italic;
     font-weight: bold;
     text-shadow: 1px 1px #555;
+    margin: 0;
     padding: 0 .25em;
+}
+
+@media (max-aspect-ratio: 3/4) {
+    .icon-container {
+        height: 5em;
+    }
+
+    .task-icon {
+        width: 3em;
+        height: 3em;
+    }
+
+    .task-icon.start {
+        height: 100%;
+        padding: 0.25em 0.5em;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .icon-text {
+        height: 0;
+        padding: 0;
+        margin: 0;
+        scale: 0;
+    }
 }

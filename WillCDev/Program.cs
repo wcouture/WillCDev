@@ -1,11 +1,7 @@
 using WillCDev.Components;
 using WillCDev.Services;
-using WillCDev.Services.Application;
 using WillCDev.Services.Command;
-using WillCDev.Services.Desktop;
 using WillCDev.Services.Program;
-using WillCDev.Services.Taskbar;
-using WillCDev.Services.Window;
 
 var builder = WebApplication.CreateBuilder(args);
 

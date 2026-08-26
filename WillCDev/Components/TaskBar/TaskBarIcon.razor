@@ -5,7 +5,7 @@
 @using WillCDev.Services.Window
 
 <div class="icon-container @(IsActive ? "active" : "")" @onclick="OpenWindow">
-    <div class="@(_isStartMenu ? "task-icon start" : "task-icon")">
+    <div class="@(_isStartMenu ? "task-icon start" : "task-icon")" >
         <Icon IconName="@IconName" IconSize="@_iconSizeRel" />
         @if (IconText?.Length > 0)
         {
