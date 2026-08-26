@@ -1,0 +1,59 @@
+﻿@using WillCDev.Services.CommandRegistry
+<section class="terminal-container" @onclick="FocusTerminalInput">
+    <div class="text-scroll-panel">
+        @foreach (var command in commands ?? [])
+        {
+            <p class="console-line">@command</p>
+        }
+    </div>
+    <TerminalInput @ref="_terminalInput"/>
+</section>
+
+@code {
+    [Inject]
+    public required IJSRuntime JS { get; set; }
+
+    [Inject]
+    public required ICommandRegistry CommandRegistry { get; set; }
+
+    private TerminalInput _terminalInput { get; set; } = default!;
+
+    private List<string> commands = new();
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _terminalInput.RegisterInputHandler(HandleCommandSubmit);
+        }
+    }
+
+    private async Task FocusTerminalInput()
+    {
+        await JS.InvokeVoidAsync("FocusElement", _terminalInput.Id);
+    }
+
+    private async Task HandleCommandSubmit(string input)
+    {
+        commands.Add(input);
+        await RouteCommand(input);
+        StateHasChanged();
+    }
+
+    private async Task RouteCommand(string command)
+    {
+        var commandAttribute = CommandRegistry.GetCommand(command);
+        if (commandAttribute != null)
+        {
+            var handler = Activator.CreateInstance(commandAttribute.HandlerType) as CommandHandlerBase;
+            if (handler != null)
+            {
+                await handler.HandleCommand(commands, command);
+            }
+        } else
+        {
+            commands.Add("Unrecognized Command");
+        }
+    }
+}

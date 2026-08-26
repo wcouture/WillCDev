@@ -3,7 +3,7 @@ using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
 using WillCDev.Services.DesktopService;
-using WillCDev.Services.ProgramService;
+using WillCDev.Services.ProgramRegistry;
 using WillCDev.Services.TaskbarService;
 using WillCDev.Services.WindowService;
 

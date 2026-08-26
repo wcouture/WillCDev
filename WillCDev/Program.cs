@@ -1,7 +1,8 @@
 using WillCDev.Components;
 using WillCDev.Services.ApplicationService;
+using WillCDev.Services.CommandRegistry;
 using WillCDev.Services.DesktopService;
-using WillCDev.Services.ProgramService;
+using WillCDev.Services.ProgramRegistry;
 using WillCDev.Services.TaskbarService;
 using WillCDev.Services.WindowService;
 
@@ -18,6 +19,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.RegisterProgramsFromAssembly();
+builder.Services.RegisterCommandsFromAssembly();
 
 var app = builder.Build();
 

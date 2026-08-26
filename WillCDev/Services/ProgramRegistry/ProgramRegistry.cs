@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using WillCDev.Components.Programs;
 
-namespace WillCDev.Services.ProgramService
+namespace WillCDev.Services.ProgramRegistry
 {
     public class ProgramRegistry : IProgramRegistry
     {

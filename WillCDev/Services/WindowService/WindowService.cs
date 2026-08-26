@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 using WillCDev.Components.Programs;
 using WillCDev.Components.TaskBar;
 using WillCDev.Components.Window;
-using WillCDev.Services.ProgramService;
+using WillCDev.Services.ProgramRegistry;
 using WillCDev.Services.TaskbarService;
 namespace WillCDev.Services.WindowService
 {

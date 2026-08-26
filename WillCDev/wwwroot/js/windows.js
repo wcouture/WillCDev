@@ -4,13 +4,22 @@ function InitDraggables() {
     draggables.draggable();
 
     draggables.toArray().forEach(element => {
-        let elmnt = $(element)[0].getBoundingClientRect();
-        let width = elmnt.width;
-        let height = elmnt.height;
+        $(element).removeClass("start");
+        $(element).addClass("init");
+        var transitionAnimation = $(element).css('transition').split(' ')[0].replace('s', '');
+        let animationTime = parseFloat(transitionAnimation) * 1000
 
-        $(element).removeClass("init");
-        $(element).css('width', width);
-        $(element).css('height', height);
+
+        setTimeout(() => {
+            let elmnt = $(element)[0].getBoundingClientRect();
+            let width = elmnt.width;
+            let height = elmnt.height;
+
+            
+            $(element).css('width', width);
+            $(element).css('height', height);
+            $(element).removeClass("init");
+        }, animationTime);
     });
 
     draggables.on("mousedown", function () {
@@ -35,4 +44,8 @@ function BringToFront(elementId) {
     });
 
     $("#" + elementId).css("z-index", 1000);
+}
+
+function FocusElement(elementId) {
+    $("#" + elementId).focus();
 }

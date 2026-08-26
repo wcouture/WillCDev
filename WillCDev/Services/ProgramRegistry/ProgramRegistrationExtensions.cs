@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Reflection;
-using WillCDev.Components.Desktop;
+using WillCDev.Components;
 using WillCDev.Components.Programs;
 
-namespace WillCDev.Services.ProgramService
+namespace WillCDev.Services.ProgramRegistry
 {
     public static class ProgramRegistrationExtensions
     {
         public static void RegisterProgramsFromAssembly(this IServiceCollection services)
         {
             var registry = new ProgramRegistry();
-            var assembly = typeof(Desktop).Assembly;
+            var assembly = typeof(App).Assembly;
 
             foreach (var type in assembly.GetTypes().Where(t => typeof(ComponentBase).IsAssignableFrom(t)))
             {

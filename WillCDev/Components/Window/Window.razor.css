@@ -4,15 +4,31 @@
     position: fixed;
     top: calc(50% - 25dvh);
     left: calc(50% - 25dvw);
+    display: flex;
+
+    flex-direction: column;
+
     z-index: 1000;
 }
+    .window-frame.start, .window-frame.init {
+        transition: 0.3s ease-in-out;
+    }
+
     .window-frame.init {
         width: 50dvw;
         height: 50dvh;
     }
 
+    .window-frame.start {
+        width: 0dvw;
+        height: 0dvh;
+    }
+
+
 .window-body {
-    padding: 10px;
+    padding: 0.25em;
+    position:relative;
+    height: 100%;
 }
 
 .title-bar {

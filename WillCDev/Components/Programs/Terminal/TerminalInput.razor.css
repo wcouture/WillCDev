@@ -1,0 +1,27 @@
+﻿.input-field {
+    background-color: black;
+    color: white;
+    border: none;
+    height: 2em;
+    flex: 2;
+    box-sizing: border-box;
+}
+
+    .input-field:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.input-knotch {
+    color: white;
+    min-width: 1.5em;
+    text-align: center;
+}
+
+.input-wrapper {
+    height: 2em;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

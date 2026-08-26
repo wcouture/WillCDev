@@ -1,0 +1,35 @@
+﻿<form class="input-wrapper" @onsubmit="HandleCommandSubmit">
+    <div class="input-knotch">
+        >
+    </div>
+    <input type="text" name="input-field" class="input-field" id="@Id" value="@Input" @oninput="HandleInput" />
+</form>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "terminal-input";
+
+    private string Input { get; set; } = string.Empty;
+    private Func<string, Task> _inputHandler = default!;
+
+    public void RegisterInputHandler(Func<string, Task> inputHandler)
+    {
+        _inputHandler = inputHandler;
+    }
+
+    private async Task HandleInput(ChangeEventArgs eventArgs)
+    {
+        var Value = eventArgs?.Value?.ToString() ?? string.Empty;
+        Input = Value;
+    }
+
+    private async Task HandleCommandSubmit()
+    {
+        if (_inputHandler != null)
+            await _inputHandler.Invoke(Input);
+        
+        Input = string.Empty;
+        StateHasChanged();
+    }
+
+}

@@ -3,11 +3,11 @@
 @using WillCDev.Components.Programs
 @using WillCDev.Components.UI
 @using WillCDev.Services.ApplicationService
-@using WillCDev.Services.ProgramService
+@using WillCDev.Services.ProgramRegistry
 
 @if (WindowSetting != null && ProgramAttribute?.ComponentType != typeof(StartMenu))
 {
-    <section id="@WindowSetting.ID" class="window-frame init draggable">
+    <section id="@WindowSetting.ID" class="window-frame start draggable">
         <div class="title-bar">
             <div class="window-icon">
                 <Icon IconName="Application Window" />
