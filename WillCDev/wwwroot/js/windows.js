@@ -1,6 +1,7 @@
-function InitDraggables() {
-    let draggables = $('.draggable');
+function InitWindows() {
 
+    // Draggable windows ========================================================================
+    let draggables = $('.draggable');
     draggables.draggable();
 
     draggables.toArray().forEach(element => {
@@ -32,6 +33,17 @@ function InitDraggables() {
         });
         $(this).css("z-index", 1000);
     });
+
+    draggables.removeClass("draggable");
+    // ==========================================================================================
+
+    // Start Menu ===============================================================================
+    let startMenu = $('.start-menu-frame.start');
+    startMenu.removeClass("start");
+
+    // ==========================================================================================
+
+    
 }
 
 function BringToFront(elementId) {
@@ -55,7 +67,7 @@ function CloseWindow(elementId) {
     element.css("width", 0);
     element.css("height", 0);
     element.addClass("start");
-    var transitionAnimation = element.css('transition').split(' ')[0].replace('s', '');
+    var transitionAnimation = element.css("transition").split(" ")[0].replace("s", "");
     let animationTime = parseFloat(transitionAnimation) * 1000
     return animationTime;
 }

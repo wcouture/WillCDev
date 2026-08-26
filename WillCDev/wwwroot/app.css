@@ -6,6 +6,7 @@ body {
 :root {
     --window-color: #2d78ea;
     --window-background-color: #fafae3;
+    --window-animation-speed: 0.2s ease-in-out;
 }
 
 

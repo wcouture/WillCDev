@@ -1,17 +1,5 @@
 @using WillCDev.Services.Application
-<section class="p-3">
-    <p class="m-0 p-0"><b>Applications:</b></p>
-    @for (var i = 0; i < _applications.Count; i++)
-    {
-        var app = _applications[i];
-        @if (app != null)
-        {
-            <div>
-                <label>&emsp;[]&ensp;</label>
-                <button @onclick="() => OpenApplication(app)">@app?.Name</button>
-            </div>
-        }
-    }
+<section class="page">
 </section>
 
 @code {

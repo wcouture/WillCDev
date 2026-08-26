@@ -41,7 +41,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await ResetDraggables();
+        await JS.InvokeVoidAsync("InitWindows");
+
         if (bringWindowToFront && windowToBringToFrontId != -1)
         {
             await JS.InvokeVoidAsync("BringToFront", windowToBringToFrontId);
@@ -61,10 +62,6 @@
 
             await ApplicationService.RefreshApplicationData();
         }
-    }
-
-    private async Task ResetDraggables() {
-        await JS.InvokeVoidAsync("InitDraggables");
     }
 
     private async Task UpdateWindows(ProgramWindow?[] updatedWindows)

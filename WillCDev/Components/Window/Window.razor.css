@@ -15,7 +15,7 @@
     z-index: 1000;
 }
     .window-frame.start, .window-frame.init, .window-frame.start .window-body {
-        transition: 0.3s ease-in-out;
+        transition: var(--window-animation-speed);
     }
 
     .window-frame.init {
@@ -89,18 +89,25 @@
 
 /* Start Menu Classes */
 .start-menu-frame {
-    border: 1px solid black;
+    border: 0.25em solid var(--window-color);
+    border-bottom-width: 0.5em;
+    border-radius: 5pt 5pt 0 0;
     background-color: white;
-
     position: fixed;
     align-self: flex-end;
-
-
     z-index: 10002;
-
     width: 20em;
     height: 30em;
+    
 }
+    .start-menu-frame, .start-menu-frame.start {
+        transition: var(--window-animation-speed);
+    }
+
+    .start-menu-frame.start {
+        width: 0;
+        height: 0;
+    }
 
 .window-click-catcher {
     position: absolute;

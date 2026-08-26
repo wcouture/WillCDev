@@ -40,7 +40,7 @@
     </section>
 } else if (WindowSetting != null && ProgramAttribute?.ComponentType == typeof(StartMenu))
 {
-        <div class="start-menu-frame">
+        <div id="@WindowSetting.ID" class="start-menu-frame start">
             <StartMenu />
         </div>
         <section class="window-click-catcher" @onclick="OnCloseWindow"></section>
