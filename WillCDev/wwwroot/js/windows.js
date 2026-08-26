@@ -2,10 +2,12 @@ function InitDraggables() {
     $(".draggable").draggable();
 
     $('.draggable').toArray().forEach(element => {
-        let elmnt = $(element).element;
-        let width = elmnt.getBoundingClientRect().width;
+        let elmnt = $(element);
+        let width = elmnt[0].getBoundingClientRect().width;
+        let height = elmnt[0].getBoundingClientRect().height;
         $(element).removeClass("init");
         $(element).css('width', width);
+        $(element).css('height', height);
     });
 
     $(".draggable").on("mousedown", function () {
