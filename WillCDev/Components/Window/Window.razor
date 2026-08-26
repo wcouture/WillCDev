@@ -11,13 +11,21 @@
         <div class="title-bar">
             <div class="window-icon">
                 <Icon IconName="Application Window" />
-                </div>
+            </div>
             <div class="window-title">
                 @WindowSetting?.WindowTitle
-                </div>
-            <div class="window-exit" @onclick="OnCloseWindow">
-                X
-                </div>
+            </div>
+            
+            <div class="window-button">
+                <Icon IconName="Minimize" />
+            </div>
+            <div class="window-button">
+                <Icon IconName="Maximize" />
+            </div>
+            <div class="window-button" @onclick="OnCloseWindow">
+                <Icon IconName="Exit" />
+            </div>
+
         </div>
         <div class="window-body" >
             @if (ProgramAttribute != null)
@@ -45,6 +53,9 @@
     [Inject]
     public required IProgramRegistry ProgramRegistry { get; set; }
 
+    [Inject]
+    public required IJSRuntime JS { get; set; }
+
     [Parameter]
     public ProgramWindow? WindowSetting { get; set; }
 
@@ -64,6 +75,8 @@
     {
         if (WindowSetting != null)
         {
+            int waitMilliseconds = await JS.InvokeAsync<int>("CloseWindow", WindowSetting.ID);
+            await Task.Delay(waitMilliseconds);
             await ApplicationService.StopApplication(WindowSetting.AppId);
         }
     }

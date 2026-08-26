@@ -1,15 +1,20 @@
 ﻿.window-frame {
-    border: 1px solid black;
-    background-color: white;
+    border: 0.25em solid var(--window-color);
+    border-radius: 3pt;
+
+    background-color: var(--window-color);
+    box-shadow: 2px 2px 3px 3px rgb(73, 73, 73, 0.52);
     position: fixed;
+
+    box-sizing: border-box;
     top: calc(50% - 25dvh);
     left: calc(50% - 25dvw);
+    
     display: flex;
     flex-direction: column;
-
     z-index: 1000;
 }
-    .window-frame.start, .window-frame.init {
+    .window-frame.start, .window-frame.init, .window-frame.start .window-body {
         transition: 0.3s ease-in-out;
     }
 
@@ -23,53 +28,66 @@
         height: 0dvh;
     }
 
+    .window-frame.start .window-body {
+        opacity: 0;
+    }
+
 
 .window-body {
-    padding: 0.25em;
+    border: 1px solid #ffffff81;
+    background-color: var(--window-background-color);
+    margin: 0;
     position:relative;
     height: 100%;
+    opacity: 1;
 }
 
 .title-bar {
-    background-color: #d0d0d0;
+    height: 1em;
+    background-color: var(--window-color);
     font-weight: bold;
     display: flex;
-    justify-content: space-between;
+    gap: 0.25em;
     align-items: center;
+    padding: 0.25em;
     box-shadow: 0px 2px 3px 3px rgba(100,100,100,0.1);
 }
 
-.title-bar:hover {
-    cursor: grab;
-}
 
 .window-icon {
-    width: 1.2em;
-    height: 1.2em;
-    padding: 5px;
+    height: 100%;
+    aspect-ratio: 1/1;
 }
 
 .window-title {
+    color: white;
     font-weight: 400;
+    flex: 2;
 }
 
-.window-exit {
-    background-color: #d00;
+.window-button {
     color: white;
-    padding: 6px 10px;
-    margin: 0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    height: 100%;
+    aspect-ratio: 1/1;
     font-weight: 300;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    box-shadow: 1px 1px 3px 3px rgb(68 68 68 / 0.17);
     transition: 0.1s ease-in-out;
 }
-
-.window-exit:hover {
-    background-color: #f00;
+.window-button:hover {
+    filter:brightness(1.1);
     cursor: pointer;
     transition: 0.1s ease-in-out;
 }
 
+.window-button.exit {
+    background-color: #f00;
+}
 
+/* Start Menu Classes */
 .start-menu-frame {
     border: 1px solid black;
     background-color: white;

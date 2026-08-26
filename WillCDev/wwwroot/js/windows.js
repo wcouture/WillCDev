@@ -49,3 +49,13 @@ function BringToFront(elementId) {
 function FocusElement(elementId) {
     $("#" + elementId).focus();
 }
+
+function CloseWindow(elementId) {
+    let element = $("#" + elementId);
+    element.css("width", 0);
+    element.css("height", 0);
+    element.addClass("start");
+    var transitionAnimation = element.css('transition').split(' ')[0].replace('s', '');
+    let animationTime = parseFloat(transitionAnimation) * 1000
+    return animationTime;
+}
