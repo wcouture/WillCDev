@@ -2,7 +2,7 @@
     background-color: black;
     color: white;
     border: none;
-    height: 2em;
+    height: var(--terminal-input-height);
     flex: 2;
     box-sizing: border-box;
 }
@@ -19,7 +19,7 @@
 }
 
 .input-wrapper {
-    height: 2em;
+    height: var(--terminal-input-height);
     width: 100%;
     display: flex;
     flex-direction: row;

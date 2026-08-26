@@ -1,21 +1,21 @@
 function InitWindows() {
 
     // Draggable windows ========================================================================
-    let draggables = $('.draggable');
-    draggables.draggable();
+    let dragsToInit = $('.draggable.start');
+    dragsToInit.draggable();
 
-    draggables.toArray().forEach(element => {
+    let draggables = $('.draggable');
+
+    dragsToInit.toArray().forEach(element => {
         $(element).removeClass("start");
         $(element).addClass("init");
         var transitionAnimation = $(element).css('transition').split(' ')[0].replace('s', '');
         let animationTime = parseFloat(transitionAnimation) * 1000
 
-
         setTimeout(() => {
             let elmnt = $(element)[0].getBoundingClientRect();
             let width = elmnt.width;
             let height = elmnt.height;
-
             
             $(element).css('width', width);
             $(element).css('height', height);
@@ -33,8 +33,6 @@ function InitWindows() {
         });
         $(this).css("z-index", 1000);
     });
-
-    draggables.removeClass("draggable");
     // ==========================================================================================
 
     // Start Menu ===============================================================================
