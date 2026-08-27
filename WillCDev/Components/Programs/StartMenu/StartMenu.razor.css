@@ -1,0 +1,41 @@
+.page {
+    background-color: var(--window-background-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.user-info-header {
+    display: flex;
+    align-items: end;
+
+    background-image: linear-gradient(#728cff, rgb(77, 103, 252), #395cfa);
+    padding: 10px;
+}
+.user-icon {
+    margin-right: 10px;
+    width: 2em;
+    height: 2em;
+}
+.applications-list {
+    padding: 10px;
+    flex: 1;
+}
+.user-name {
+    font-weight: bold;
+    color: white;
+}
+.application-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+.application-item:hover {
+    background-color: white;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.3);
+}
+.application-icon {
+    margin-right: 10px;
+    width: 1em;
+    height: 1em;
+}

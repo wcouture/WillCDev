@@ -1,0 +1,47 @@
+@using Shared.Models;
+@using Shared.Services;
+@using WillCDev.Components.UI
+
+<section class="page">
+    <div class="user-info-header">
+        <div class="user-icon">
+            <Icon IconName="WMP Plugin" />
+        </div>
+        <div class="user-name">User Name</div>
+    </div>
+    <div class="applications-list">
+        @for(int i = 0; i < _applications.Count; i++)
+        {
+            var app = _applications[i];
+            if (app == null)
+                continue;
+
+            <div class="application-item" @onclick="() => OpenApplication(app)">
+                <div class="application-icon">
+                    <Icon IconName="@app?.IconName" />
+                </div>
+                @app?.Name
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Inject]
+    public required IApplicationService ApplicationService { get; set; }
+
+    private List<Application?> _applications { get; set; } = new();
+
+    private void OpenApplication(Application? app)
+    {
+        if (app == null)
+            return;
+
+        ApplicationService.StartApplication(app.Id);
+    }
+
+    protected override void OnInitialized()
+    {
+        _applications = (ApplicationService?.GetApplications() ?? []);
+    }
+}
