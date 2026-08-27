@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using WillCDev.Components;
-using WillCDev.Services.Command;
+using Shared.Attributes;
 
 namespace WillCDev.Services
 {

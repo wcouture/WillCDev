@@ -1,7 +1,5 @@
 using WillCDev.Components;
 using WillCDev.Services;
-using WillCDev.Services.Command;
-using WillCDev.Services.Program;
 
 var builder = WebApplication.CreateBuilder(args);
 

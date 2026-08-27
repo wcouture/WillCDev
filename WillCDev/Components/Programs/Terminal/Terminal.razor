@@ -1,5 +1,5 @@
-﻿@using WillCDev.Services.Command
-@using WillCDev.Services.Command.Commands
+﻿@using Shared.Services
+
 <section class="terminal-container" @onclick="FocusTerminalInput">
     <div class="text-scroll-panel">
         @foreach (var command in consoleLines ?? [])
