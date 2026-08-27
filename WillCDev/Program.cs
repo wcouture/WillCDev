@@ -1,5 +1,7 @@
 using WillCDev.Components;
+using WillCDev.Extensions;
 using WillCDev.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +11,19 @@ builder.Services.AddHttpClient();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme); 
+builder.Services.AddAuthorization();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCascadingAuthenticationState();
+
 // Add services
-builder.Services.RegisterServicesFromAssembly();
+builder.Services.RegisterServicesFromAssembly(builder.Configuration);
 // Load programs and commands
-builder.Services.RegisterProgramsFromAssembly();
-builder.Services.RegisterCommandsFromAssembly();
+builder.Services.RegisterProgramsFromAssembly(builder.Configuration);
+builder.Services.RegisterCommandsFromAssembly(builder.Configuration);
 
 var app = builder.Build();
 
@@ -28,6 +38,9 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

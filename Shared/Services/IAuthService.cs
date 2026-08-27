@@ -2,8 +2,8 @@ namespace Shared.Services
 {
     public interface IAuthService
     {
-        bool IsAuthenticated();
-        void SignIn(string username, string password);
-        void SignOut();
+        Task<bool> IsAuthenticated();
+        Task SignIn(string username, string password);
+        Task SignOut();
     }
 }

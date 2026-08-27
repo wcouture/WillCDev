@@ -43,5 +43,6 @@
     protected override void OnInitialized()
     {
         _applications = (ApplicationService?.GetApplications() ?? []);
+        _applications = _applications.Where(a => a?.IconName != "start").ToList();
     }
 }

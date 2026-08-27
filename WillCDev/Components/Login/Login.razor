@@ -1,0 +1,66 @@
+@rendermode InteractiveServer
+@page "/login"
+@using Shared.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
+
+<div class="xp-login-screen">
+    <div class="xp-login-dialog">
+        <div class="xp-titlebar">
+            <span>Log On to Windows</span>
+            <button type="button" aria-label="Close" @onclick="HandleCancel">x</button>
+        </div>
+
+        <div class="xp-dialog-body">
+            <div class="xp-user-box">
+                <div class="xp-user-icon" aria-hidden="true">👤</div>
+                <div class="xp-form">
+                    <label for="username">User name</label>
+                    <input id="username" type="text" @bind="username" />
+
+                    <label for="password">Password</label>
+                    <input id="password" type="password" @bind="password" />
+                </div>
+            </div>
+
+            <div class="xp-actions">
+                <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
+                <button type="button" class="xp-button primary" @onclick="HandleLogin">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    public required IAuthService AuthService { get; set; }
+    [CascadingParameter]
+    public required HttpContext HttpContext { get; set; }
+
+    private bool isAuthenticated { get; set; }
+    private string username {get; set;} = string.Empty;
+    private string password {get; set;} = string.Empty;
+
+    private async Task HandleLogin()
+    {
+        // Implement login logic here using the username and password properties.
+        ClaimsIdentity identity = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, username)
+        }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        ClaimsPrincipal user = new ClaimsPrincipal(identity);
+        
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void HandleCancel()
+    {
+        // Implement cancel logic here.
+    }
+}
