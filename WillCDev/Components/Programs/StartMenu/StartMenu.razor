@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Components.Authorization
 @using Shared.Models;
 @using Shared.Services;
 @using WillCDev.Components.UI
@@ -7,7 +8,7 @@
         <div class="user-icon">
             <Icon IconName="WMP Plugin" />
         </div>
-        <div class="user-name">User Name</div>
+        <div class="user-name">@userName</div>
     </div>
     <div class="applications-list">
         @for(int i = 0; i < _applications.Count; i++)
@@ -28,9 +29,17 @@
 
 @code {
     [Inject]
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject]
     public required IApplicationService ApplicationService { get; set; }
 
+    [Inject]
+    public required IAuthService AuthService { get; set; }
+
     private List<Application?> _applications { get; set; } = new();
+
+    private string userName { get; set; } = string.Empty;
 
     private void OpenApplication(Application? app)
     {
@@ -40,9 +49,19 @@
         ApplicationService.StartApplication(app.Id);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _applications = (ApplicationService?.GetApplications() ?? []);
         _applications = _applications.Where(a => a?.IconName != "start").ToList();
+
+        //userName = await AuthService.GetCurrentUsername();
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            userName = user.Identity.Name ?? userName;
+        }
+
     }
 }

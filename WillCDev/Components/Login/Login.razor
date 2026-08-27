@@ -29,7 +29,7 @@
 
             <div class="xp-actions">
                 <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
-                <button type="button" class="xp-button primary" @onclick="HandleLogin">OK</button>
+                <button type="button" class="xp-button primary" @onclick="BeginLogin">OK</button>
             </div>
         </div>
     </div>
@@ -45,18 +45,44 @@
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
 
-    private async Task HandleLogin()
+    protected override async Task OnInitializedAsync() {
+        var query = new Uri(NavigationManager.Uri).Query;
+        if (!string.IsNullOrEmpty(query))
+        {
+            var queryParams = System.Web.HttpUtility.ParseQueryString(query);
+            var userGuid = queryParams["user"] ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userGuid) == false) {
+                var userId = Guid.Parse(userGuid);
+                username = await AuthService.GetUsername(userId);
+                if (await AuthService.IsAuthenticated(userId)) {
+                    await HandleLogin(userId);
+                }
+            }
+        }
+    }
+
+    private async Task HandleLogin(Guid guid)
     {
+
         // Implement login logic here using the username and password properties.
         ClaimsIdentity identity = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.Name, username)
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.NameIdentifier, guid.ToString())
         }, CookieAuthenticationDefaults.AuthenticationScheme);
 
         ClaimsPrincipal user = new ClaimsPrincipal(identity);
         
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user);
         NavigationManager.NavigateTo("/");
+    }
+
+    private async Task BeginLogin() {
+        var userId = await AuthService.SignIn(username, password);
+
+
+        NavigationManager.NavigateTo($"/login?user={userId}", true);
     }
 
     private void HandleCancel()

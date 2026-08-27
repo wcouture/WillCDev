@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,11 +17,17 @@
 </head>
 
 <body>
-    <Routes />
-    <ReconnectModal />
+    <CascadingAuthenticationState>
+        <Routes />
+        <ReconnectModal />
+    </CascadingAuthenticationState>
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["js/windows.js"]">
     </script>
 </body>
 
 </html>
+
+@code {
+    
+}

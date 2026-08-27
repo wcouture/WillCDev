@@ -1,31 +1,40 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Attributes;
 using Shared.Services;
-using System.Threading.Tasks;
 
 namespace WillCDev.Services
 {
-    [Service(typeof(IAuthService), ServiceType.Scoped)]
-    public class AuthService(AuthenticationStateProvider authenticationStateProvider) : IAuthService
+    [Service(typeof(IAuthService), ServiceType.Singleton)]
+    public class AuthService : IAuthService
     {
-        private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
+        private Dictionary<Guid, string> _authenticatedUsers { get; set; } = new(); 
 
-        public async Task<bool> IsAuthenticated()
+        public async Task<bool> IsAuthenticated(Guid guid)
         {
-            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            return authState.User.Identity.IsAuthenticated;
+            return _authenticatedUsers.ContainsKey(guid);
         }
 
-        public Task SignIn(string username, string password)
+        public Task<Guid> SignIn(string username, string password)
         {
             // Custom sign-in logic can be added here.
-            return Task.FromResult(true);
+            var userId = Guid.NewGuid();
+            _authenticatedUsers[userId] = username;
+            return Task.FromResult(userId);
         }
 
-        public Task SignOut()
+        public Task SignOut(Guid guid)
         {
-            // Custom sign-out logic can be added here.
+            if (_authenticatedUsers.ContainsKey(guid)) {
+                _authenticatedUsers.Remove(guid);
+            }
             return Task.CompletedTask;
+        }
+
+        public Task<string> GetUsername(Guid guid)
+        {
+            // Return the username associated with the specified GUID, if any.
+            var username = _authenticatedUsers.TryGetValue(guid, out var name) ? name : string.Empty;
+            return Task.FromResult(username);
         }
     }
 }
