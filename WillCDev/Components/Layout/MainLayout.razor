@@ -1,4 +1,5 @@
-﻿@using WillCDev.Components.TaskBar
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using WillCDev.Components.TaskBar
 @rendermode InteractiveServer
 @inherits LayoutComponentBase
 
@@ -9,3 +10,23 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+
+@code {
+
+    [Inject]
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == false && !NavigationManager.Uri.EndsWith("/login")) {
+            NavigationManager.NavigateTo("/login", true);
+        } else if (NavigationManager.Uri.EndsWith("/desktop") == false && user.Identity?.IsAuthenticated == true) {
+            NavigationManager.NavigateTo("/desktop", true);
+        }
+    }
+}
