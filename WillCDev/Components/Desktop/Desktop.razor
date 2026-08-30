@@ -1,5 +1,6 @@
 ﻿@page "/desktop"
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Authorization
 @using WillCDev.Components.TaskBar
 @using WillCDev.Components.Window
 @using Shared.Models
@@ -39,6 +40,22 @@
 
     [Inject]
     public required IApplicationService ApplicationService { get; set; }
+
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    protected override async Task OnInitializedAsync() 
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == false)
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

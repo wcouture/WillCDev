@@ -1,7 +1,10 @@
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.IdentityModel.JsonWebTokens
 @using Shared.Models;
 @using Shared.Services;
 @using WillCDev.Components.UI
+@using WillCDev.Services
 
 <section class="page">
     <div class="user-info-header">
@@ -9,6 +12,7 @@
             <Icon IconName="WMP Plugin" />
         </div>
         <div class="user-name">@userName</div>
+        <button @onclick="Logout">Logout</button>
     </div>
     <div class="applications-list">
         @for(int i = 0; i < _applications.Count; i++)
@@ -28,9 +32,6 @@
 </section>
 
 @code {
-    [Inject]
-    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-
     [Inject]
     public required IApplicationService ApplicationService { get; set; }
 
@@ -55,13 +56,11 @@
         _applications = _applications.Where(a => a?.IconName != "start").ToList();
 
         //userName = await AuthService.GetCurrentUsername();
+        userName = await AuthService.GetUsername();
+    }
 
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            userName = user.Identity.Name ?? userName;
-        }
-
+    private async Task Logout()
+    {
+        await AuthService.Logout();
     }
 }

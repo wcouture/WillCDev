@@ -1,9 +1,8 @@
 @rendermode InteractiveServer
-@page "/login"
 @using Shared.Services
-@using System.Security.Claims
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authentication.Cookies
+@using Shared.Models
+@using WillCDev.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
 
 <PageTitle>Login</PageTitle>
@@ -29,7 +28,7 @@
 
             <div class="xp-actions">
                 <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
-                <button type="button" class="xp-button primary" @onclick="BeginLogin">OK</button>
+                <button type="button" class="xp-button primary" @onclick="HandleLogin">OK</button>
             </div>
         </div>
     </div>
@@ -38,52 +37,30 @@
 @code {
     [Inject]
     public required IAuthService AuthService { get; set; }
-    [CascadingParameter]
-    public required HttpContext HttpContext { get; set; }
+    [Inject]
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    [Inject]
+    public required IHttpClientFactory HttpClientFactory { get; set; }
 
-    private bool isAuthenticated { get; set; }
+
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
 
-    protected override async Task OnInitializedAsync() {
-        var query = new Uri(NavigationManager.Uri).Query;
-        if (!string.IsNullOrEmpty(query))
-        {
-            var queryParams = System.Web.HttpUtility.ParseQueryString(query);
-            var userGuid = queryParams["user"] ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(userGuid) == false) {
-                var userId = Guid.Parse(userGuid);
-                username = await AuthService.GetUsername(userId);
-                if (await AuthService.IsAuthenticated(userId)) {
-                    await HandleLogin(userId);
-                }
-            }
+    private async Task HandleLogin()
+    {
+        if (await AuthService.Login(username, password))
+        {
+            NavigationManager.NavigateTo("/desktop");
+            return;
+        }
+        else
+        {
+            // Handle login failure (e.g., show an error message)
         }
     }
 
-    private async Task HandleLogin(Guid guid)
-    {
 
-        // Implement login logic here using the username and password properties.
-        ClaimsIdentity identity = new ClaimsIdentity(new[]
-        {
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.NameIdentifier, guid.ToString())
-        }, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        ClaimsPrincipal user = new ClaimsPrincipal(identity);
-        
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user);
-        NavigationManager.NavigateTo("/");
-    }
-
-    private async Task BeginLogin() {
-        var userId = await AuthService.SignIn(username, password);
-
-
-        NavigationManager.NavigateTo($"/login?user={userId}", true);
-    }
 
     private void HandleCancel()
     {
