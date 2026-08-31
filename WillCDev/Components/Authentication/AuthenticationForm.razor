@@ -1,0 +1,26 @@
+﻿@inject NavigationManager NavigationManager
+
+@if (isRegistering)
+{
+    <Register SwitchToLogin="SwitchToLogin" />
+}
+else
+{
+    <Login SwitchToRegistration="SwitchToRegister" />
+}
+
+@code {
+    private bool isRegistering { get; set; } = false;
+
+    private void SwitchToRegister()
+    {
+        isRegistering = true;
+        StateHasChanged();
+    }
+
+    private void SwitchToLogin()
+    {
+        isRegistering = false;
+        StateHasChanged();
+    }
+}

@@ -27,20 +27,25 @@
             </div>
 
             <div class="xp-actions">
-                <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
-                <button type="button" class="xp-button primary" @onclick="HandleLogin">OK</button>
+                <button type="button" class="xp-button primary" @onclick="HandleLogin">Login</button>
+                <button type="button" class="xp-button primary" @onclick="SwitchToRegistration">Register</button>
             </div>
         </div>
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public Action SwitchToRegistration { get; set; } = () => { };
+
     [Inject]
     public required IAuthService AuthService { get; set; }
     [Inject]
     public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Inject]
     public required IHttpClientFactory HttpClientFactory { get; set; }
+    [Inject]
+    public required IJSRuntime JS { get; set; }
 
 
     private string username {get; set;} = string.Empty;
@@ -60,10 +65,13 @@
         }
     }
 
-
-
-    private void HandleCancel()
+    private void HandleRegister()
     {
-        // Implement cancel logic here.
+        SwitchToRegistration();
+    }
+
+    private async Task HandleCancel()
+    {
+        await JS.InvokeVoidAsync("window.close");
     }
 }

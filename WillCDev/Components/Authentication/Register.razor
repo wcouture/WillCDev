@@ -1,0 +1,68 @@
+@rendermode InteractiveServer
+@using Shared.Services
+@using Shared.Models
+@using WillCDev.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+
+<PageTitle>Register</PageTitle>
+
+<div class="xp-login-screen">
+    <div class="xp-login-dialog">
+        <div class="xp-titlebar">
+            <span>Welcome new user!</span>
+            <button type="button" aria-label="Close" @onclick="HandleCancel">x</button>
+        </div>
+
+        <div class="xp-dialog-body">
+            <div class="xp-user-box">
+                <div class="xp-user-icon" aria-hidden="true">👤</div>
+                <div class="xp-form">
+                    <label for="username">User name</label>
+                    <input id="username" type="text" @bind="username" />
+
+                    <label for="password">Password</label>
+                    <input id="password" type="password" @bind="password" />
+                </div>
+            </div>
+
+            <div class="xp-actions">
+                <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
+                <button type="button" class="xp-button primary" @onclick="HandleLogin">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Action SwitchToLogin { get; set; } = () => { };
+
+    [Inject]
+    public required IAuthService AuthService { get; set; }
+    [Inject]
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    [Inject]
+    public required IHttpClientFactory HttpClientFactory { get; set; }
+
+
+    private string username {get; set;} = string.Empty;
+    private string password {get; set;} = string.Empty;
+
+
+    private async Task HandleLogin()
+    {
+        if (await AuthService.Register(username, password))
+        {
+            SwitchToLogin();
+            return;
+        }
+    }
+
+
+
+    private void HandleCancel()
+    {
+        SwitchToLogin();
+    }
+}

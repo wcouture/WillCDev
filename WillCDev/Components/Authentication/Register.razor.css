@@ -1,0 +1,116 @@
+.xp-login-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .xp-login-dialog {
+        width: 420px;
+        background: #e6e6e6;
+        border: 2px solid #7f7f7f;
+        box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #b7b7b7;
+    }
+
+    .xp-titlebar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(to bottom, #1a5edc 0%, #1d5ec5 35%, #1344a5 100%);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 5px 8px 5px 10px;
+        border-bottom: 1px solid #0d2d70;
+        user-select: none;
+    }
+
+    .xp-titlebar button {
+        width: 18px;
+        height: 18px;
+        border: 1px solid #ffffff;
+        background: linear-gradient(to bottom, #f3f3f3 0%, #d9d9d9 100%);
+        color: #000000;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .xp-dialog-body {
+        padding: 18px 18px 14px;
+        background: #e6e6e6;
+    }
+
+    .xp-user-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .xp-user-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #2f6ad5;
+        background: #d8d8d8;
+        border: 1px solid #b2b2b2;
+        box-shadow: inset 0 0 0 1px #f4f4f4;
+    }
+
+    .xp-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .xp-form label {
+        font-size: 12px;
+        color: #1f1f1f;
+        font-weight: 600;
+    }
+
+    .xp-form input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #7a7a7a;
+        background: #ffffff;
+        padding: 5px 8px;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .xp-form input:focus {
+        border-color: #1f5fd9;
+        box-shadow: inset 0 0 0 1px #9bb9f5;
+    }
+
+    .xp-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+    .xp-button {
+        min-width: 76px;
+        padding: 6px 14px;
+        border: 1px solid #7a7a7a;
+        background: linear-gradient(to bottom, #f8f8f8 0%, #e5e5e5 100%);
+        color: #000000;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px #ffffff;
+    }
+
+    .xp-button.primary {
+        background: linear-gradient(to bottom, #f6fafc 0%, #d7e6ff 100%);
+    }
