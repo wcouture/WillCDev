@@ -57,6 +57,7 @@ function BringToFront(elementId) {
 }
 
 function FocusElement(elementId) {
+    console.log("focus: ", elementId);
     $("#" + elementId).focus();
 }
 

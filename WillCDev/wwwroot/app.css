@@ -9,6 +9,7 @@ body {
     --window-animation-speed: 0.2s ease-in-out;
 
     --terminal-input-height: 2em;
+    font-family: monospace;
 }
 
 

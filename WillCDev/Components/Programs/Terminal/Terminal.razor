@@ -1,7 +1,11 @@
-﻿@using Shared.Services
+﻿@using Microsoft.JSInterop
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Shared.Services
+@rendermode InteractiveServer
 
-<section class="terminal-container" @onclick="FocusTerminalInput">
-    <div class="text-scroll-panel">
+
+<section class="terminal-container">
+    <div class="text-scroll-panel" @onclick="FocusTerminalInput">
         @foreach (var command in consoleLines ?? [])
         {
             <p class="console-line">@command</p>
