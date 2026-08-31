@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using WillCDev.Services;
+using Shared.Models.Authentication;
 namespace WillCDev.Controllers
 {
     [ApiController]
@@ -13,9 +14,11 @@ namespace WillCDev.Controllers
     public class AuthController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Login([FromBody] LoginRequest request, IConfiguration configuration)
+        public IActionResult Login([FromBody] LoginRequest request, IConfiguration configuration, AuthDbContext dbContext)
         {
-            if (request.Username.Equals("admin", StringComparison.OrdinalIgnoreCase) && request.Password == "password")
+            var user = dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
+
+            if (user != null && request.Password == user.PasswordHash)
             {
                 // Implement JWT token generation logic here
                 
@@ -55,5 +58,26 @@ namespace WillCDev.Controllers
                 return Unauthorized(new LoginResult { ErrorMessage = "Invalid username or password" });
             }
         }
+
+        [HttpPost]
+        public IActionResult Register([FromBody] RegisterRequest request, IConfiguration configuration, AuthDbContext dbContext)
+        {
+            var existingUser = dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
+            if (existingUser != null)
+            {
+                return BadRequest(new RegisterResult { ErrorMessage = "Username already exists" });
+            }
+
+            var newUser = new User
+            {
+                Username = request.Username,
+                PasswordHash = request.Password
+            };
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+
+            return Ok(new RegisterResult { Success = true });
+        }
+        
     }
 }

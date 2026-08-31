@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Attributes;
-using Shared.Models;
+using Shared.Models.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Services;
 
@@ -37,9 +37,6 @@ namespace WillCDev.Services
                     {
                         throw new Exception("Login failed: Invalid token.");
                     }
-
-                    await ((JwtAuthenticationStateProvider)_authenticationStateProvider).SetUserAsAuthenticated(content.Token);
-
                 }
                 
                 return true;
@@ -48,6 +45,34 @@ namespace WillCDev.Services
             {
                 // Handle any exceptions that occur during the login process.
                 Console.WriteLine($"Login failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> Register(string username, string password)
+        {
+            try
+            {
+                using (var httpClient = _httpClientFactory.CreateClient("Self"))
+                {
+                    var response = await httpClient.PostAsJsonAsync("/api/auth/register", new { username, password });
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return false;
+                    }
+
+                    var content = await response.Content.ReadFromJsonAsync<RegisterResult>();
+                    if (content == null)
+                    {
+                        return false;
+                    }
+
+                    return content.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Registration failed: {ex.Message}");
                 return false;
             }
         }
