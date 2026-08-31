@@ -3,9 +3,17 @@ using WillCDev.Extensions;
 using WillCDev.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add DbContext with MySQL
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseMySQL(connectionString));
+
 
 builder.Services.AddHttpClient("Self", client =>
 {
@@ -53,6 +61,14 @@ builder.Services.RegisterCommandsFromAssembly(builder.Configuration);
 builder.Services.AddScoped(provider => (JwtAuthenticationStateProvider)provider.GetRequiredService<AuthenticationStateProvider>());
 
 var app = builder.Build();
+
+// Apply migrations and create database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    db.Database.EnsureCreated();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
