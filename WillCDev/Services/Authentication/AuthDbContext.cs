@@ -14,8 +14,10 @@ public class AuthDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        // Add any model configurations here if needed
-        // Example: modelBuilder.Entity<Application>().HasKey(a => a.Id);
+
+        modelBuilder.Entity<User>().HasKey(u => u.Id);
+        modelBuilder.Entity<User>().Property(u => u.Username).IsRequired();
+        modelBuilder.Entity<User>().Property(u => u.PasswordHash).IsRequired();
+        modelBuilder.Entity<User>().Property(u => u.Email).IsRequired(false);
     }
 }

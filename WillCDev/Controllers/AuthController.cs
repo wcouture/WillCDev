@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using WillCDev.Services;
 using Shared.Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
 namespace WillCDev.Controllers
 {
     [ApiController]
@@ -14,6 +15,7 @@ namespace WillCDev.Controllers
     public class AuthController : ControllerBase
     {
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] LoginRequest request, IConfiguration configuration, AuthDbContext dbContext)
         {
             var user = dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
@@ -60,6 +62,7 @@ namespace WillCDev.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Register([FromBody] RegisterRequest request, IConfiguration configuration, AuthDbContext dbContext)
         {
             var existingUser = dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
@@ -70,6 +73,7 @@ namespace WillCDev.Controllers
 
             var newUser = new User
             {
+                Id = Guid.NewGuid(),
                 Username = request.Username,
                 PasswordHash = request.Password
             };

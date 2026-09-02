@@ -65,9 +65,33 @@ var app = builder.Build();
 // Apply migrations and create database if it doesn't exist
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    db.Database.EnsureCreated();
-    db.Database.Migrate();
+    bool databaseInitialized = false;
+    int attemptCount = 0;
+    while (!databaseInitialized)
+    {
+        try
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+            db.Database.EnsureCreated();
+            db.Database.Migrate();
+            
+            databaseInitialized = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while initializing the database: {ex.Message}");
+            Console.WriteLine("Retrying database initialization in 1 second...");
+            attemptCount++;
+            if (attemptCount >= 5)
+            {
+                Environment.Exit(1);
+                return;
+            }
+            // Optionally, add a delay before retrying
+            Thread.Sleep(1000);
+        }
+    }
+
 }
 
 // Configure the HTTP request pipeline.
