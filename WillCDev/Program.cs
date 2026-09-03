@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<AuthDbContext>(options =>
-    options.UseMySQL(connectionString));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 
 builder.Services.AddHttpClient("Self", client =>
@@ -73,7 +73,6 @@ using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             db.Database.EnsureCreated();
-            db.Database.Migrate();
             
             databaseInitialized = true;
         }
@@ -84,8 +83,9 @@ using (var scope = app.Services.CreateScope())
             attemptCount++;
             if (attemptCount >= 5)
             {
-                Environment.Exit(1);
-                return;
+                // Environment.Exit(1);
+                // return;
+                break;
             }
             // Optionally, add a delay before retrying
             Thread.Sleep(1000);
@@ -101,7 +101,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+app.UseStatusCodePagesWithReExecute("/not-found");
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();

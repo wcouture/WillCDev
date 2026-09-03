@@ -1,8 +1,8 @@
+@page "/login"
 @rendermode InteractiveServer
 @using Shared.Services
-@using Shared.Models
-@using WillCDev.Services
 @using Microsoft.AspNetCore.Components.Authorization
+
 @inject NavigationManager NavigationManager
 
 <PageTitle>Login</PageTitle>
@@ -28,15 +28,13 @@
 
             <div class="xp-actions">
                 <button type="button" class="xp-button primary" @onclick="HandleLogin">Login</button>
-                <button type="button" class="xp-button primary" @onclick="SwitchToRegistration">Register</button>
+                <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter]
-    public Action SwitchToRegistration { get; set; } = () => { };
 
     [Inject]
     public required IAuthService AuthService { get; set; }
@@ -67,7 +65,7 @@
 
     private void HandleRegister()
     {
-        SwitchToRegistration();
+        NavigationManager.NavigateTo("/register");
     }
 
     private async Task HandleCancel()

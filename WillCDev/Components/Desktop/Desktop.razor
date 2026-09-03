@@ -45,13 +45,11 @@
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    public required IAuthService AuthService { get; set; }
 
     protected override async Task OnInitializedAsync() 
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated == false)
+        if (!await AuthService.IsAuthenticated())
         {
             NavigationManager.NavigateTo("/login", true);
         }

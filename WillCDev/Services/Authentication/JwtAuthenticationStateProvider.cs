@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using Shared.Attributes;
-
+using System.Text.Json;
 namespace WillCDev.Services
 {
     [Service(typeof(AuthenticationStateProvider), ServiceType.Scoped)]
@@ -15,7 +15,7 @@ namespace WillCDev.Services
         public async Task SetUserAsAuthenticated(string token)
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
-            NotifyUserAuthentication(token);
+            await NotifyUserAuthentication(token);
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -40,7 +40,7 @@ namespace WillCDev.Services
             }
         }
 
-        public void NotifyUserAuthentication(string token)
+        public async Task NotifyUserAuthentication(string token)
         {
             var claims = ParseClaimsFromJwt(token);
             var identity = new ClaimsIdentity(claims, "jwt", nameType: ClaimTypes.Name, roleType: ClaimTypes.Role);

@@ -82,6 +82,14 @@ namespace WillCDev.Controllers
 
             return Ok(new RegisterResult { Success = true });
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Users(AuthDbContext dbContext)
+        {
+            var users = dbContext.Users.Select(u => new { u.Id, u.Username }).ToList();
+            return Ok(users);
+        }
         
     }
 }

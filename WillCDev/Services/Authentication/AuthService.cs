@@ -3,6 +3,7 @@ using Shared.Attributes;
 using Shared.Models.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Services;
+using System.Text.Json;
 
 namespace WillCDev.Services
 {
@@ -37,6 +38,8 @@ namespace WillCDev.Services
                     {
                         throw new Exception("Login failed: Invalid token.");
                     }
+                    
+                    await ((JwtAuthenticationStateProvider)_authenticationStateProvider).SetUserAsAuthenticated(content.Token);
                 }
                 
                 return true;
