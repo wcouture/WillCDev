@@ -1,10 +1,10 @@
-# Step 1: Use the official ASP.NET Core 9.0 runtime as the base image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+# Step 1: Use the official ASP.NET Core 10.0 runtime as the base image
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 EXPOSE 8080
 EXPOSE 8081
 
-# Step 2: Use the .NET 9 SDK image to build the application
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Step 2: Use the .NET 10 SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 # Copy the project files and restore dependencies
