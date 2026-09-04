@@ -4,6 +4,7 @@ using WillCDev.Components;
 using Shared.Attributes;
 using Shared.Services;
 using WillCDev.Services;
+using Shared.Models;
 
 namespace WillCDev.Extensions
 {

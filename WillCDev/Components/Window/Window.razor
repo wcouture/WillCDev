@@ -48,6 +48,7 @@
 }
 
 @code {
+
     [Inject]
     public required IApplicationService ApplicationService { get; set; }
 
@@ -63,6 +64,14 @@
     public string WindowTitle { get; set; } = "Window Title";
 
     private ProgramAttribute? ProgramAttribute { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && ProgramAttribute?.ShrinkWindowOnLoad == true)
+        {
+            JS.InvokeVoidAsync("ShrinkWindow", WindowSetting?.ID);
+        }
+    }
 
     protected override void OnParametersSet()
     {

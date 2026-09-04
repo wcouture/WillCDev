@@ -1,5 +1,6 @@
 ﻿using Shared.Attributes;
 using Microsoft.AspNetCore.Components;
+using Shared.Models;
 
 namespace WillCDev.Components.Programs.Terminal
 {

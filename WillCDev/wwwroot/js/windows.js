@@ -70,3 +70,20 @@ function CloseWindow(elementId) {
     let animationTime = parseFloat(transitionAnimation) * 1000
     return animationTime;
 }
+
+function ShrinkWindow(elementId) {
+    let element = $("#" + elementId);
+    
+    var transitionAnimation = $(element).css('transition').split(' ')[0].replace('s', '');
+    let animationTime = parseFloat(transitionAnimation) * 1000
+
+    setTimeout(() => {
+        element.css("height", "min-content");
+    
+        let width = element[0].getBoundingClientRect().width;
+        let height = element[0].getBoundingClientRect().height;
+    
+        element.css("width", width);
+        element.css("height", height);
+    }, animationTime);
+}

@@ -12,12 +12,14 @@
         public bool DefaultTaskbarIcon { get; set; } = true;
         public bool DefaultDesktopShortcut { get; set; } = false;
         public Type ComponentType { get; set; } = typeof(object);
+        public bool ShrinkWindowOnLoad { get; set; } = false;
 
         public ProgramAttribute(string programName, 
                                 string programDescription = "New Program", 
                                 string iconName = "Generic Document", 
                                 bool defaultTaskbarIcon = true, 
-                                bool defaultDesktopShortcut = false)
+                                bool defaultDesktopShortcut = false,
+                                bool shrinkWindowOnLoad = false)
         {
             ID = ProgramAttribute.ProgramCount + 1;
             ProgramAttribute.ProgramCount++;
@@ -27,6 +29,7 @@
             IconName = iconName;
             DefaultDesktopShortcut = defaultDesktopShortcut;
             DefaultTaskbarIcon = defaultTaskbarIcon;
+            ShrinkWindowOnLoad = shrinkWindowOnLoad;
         }
     }
 }
