@@ -48,7 +48,8 @@
 
     private async Task HandleRegister()
     {
-        if (await AuthService.Register(username, password))
+        var response = await AuthService.Register(username, password);
+        if (response == System.Net.HttpStatusCode.OK)
         {
             NavigationManager.NavigateTo("/login");
             return;

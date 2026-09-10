@@ -4,6 +4,7 @@ using Shared.Models.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Services;
 using System.Text.Json;
+using System.Net;
 
 namespace WillCDev.Services
 {
@@ -20,7 +21,7 @@ namespace WillCDev.Services
             return user.Identity?.IsAuthenticated ?? false;
         }
 
-        public async Task<bool> Login(string username, string password)
+        public async Task<HttpStatusCode> Login(string username, string password)
         {
             // Custom sign-in logic can be added here.
             try
@@ -28,55 +29,41 @@ namespace WillCDev.Services
                 using (var httpClient = _httpClientFactory.CreateClient("Self"))
                 {
                     var response = await httpClient.PostAsJsonAsync("/api/auth/login", new { username, password });
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new Exception("Login failed.");
-                    }
 
                     var content = await response.Content.ReadFromJsonAsync<LoginResult>();
-                    if (content == null || content.Token == null)
-                    {
-                        throw new Exception("Login failed: Invalid token.");
-                    }
-                    
-                    await ((JwtAuthenticationStateProvider)_authenticationStateProvider).SetUserAsAuthenticated(content.Token);
+                    if (content == null)
+                        throw new Exception("Bad LoginResult returned from /api/auth/login.");
+
+                    if (response.IsSuccessStatusCode)
+                        await ((JwtAuthenticationStateProvider)_authenticationStateProvider).SetUserAsAuthenticated(content.Token!);
+
+                    return response.StatusCode;
                 }
-                
-                return true;
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that occur during the login process.
-                Console.WriteLine($"Login failed: {ex.Message}");
-                return false;
+                return HttpStatusCode.InternalServerError;
             }
         }
 
-        public async Task<bool> Register(string username, string password)
+        public async Task<HttpStatusCode> Register(string username, string password)
         {
             try
             {
                 using (var httpClient = _httpClientFactory.CreateClient("Self"))
                 {
                     var response = await httpClient.PostAsJsonAsync("/api/auth/register", new { username, password });
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return false;
-                    }
 
                     var content = await response.Content.ReadFromJsonAsync<RegisterResult>();
                     if (content == null)
-                    {
-                        return false;
-                    }
+                        throw new Exception("Bad RegisterResult returned from /api/auth/register.");
 
-                    return content.Success;
+                    return response.StatusCode;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Registration failed: {ex.Message}");
-                return false;
+                return HttpStatusCode.InternalServerError;
             }
         }
 

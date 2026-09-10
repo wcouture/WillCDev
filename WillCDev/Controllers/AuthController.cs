@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using WillCDev.Services;
 using Shared.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 namespace WillCDev.Controllers
 {
     [ApiController]
@@ -68,7 +69,7 @@ namespace WillCDev.Controllers
             var existingUser = dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
             if (existingUser != null)
             {
-                return BadRequest(new RegisterResult { ErrorMessage = "Username already exists" });
+                return Conflict(new RegisterResult { ErrorMessage = "Username already exists" });
             }
 
             var newUser = new User

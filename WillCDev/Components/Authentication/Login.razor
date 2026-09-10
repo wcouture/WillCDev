@@ -1,7 +1,8 @@
 @page "/login"
 @rendermode InteractiveServer
-@using Shared.Services
+@using System.Net
 @using Microsoft.AspNetCore.Components.Authorization
+@using Shared.Services
 
 @inject NavigationManager NavigationManager
 
@@ -26,9 +27,13 @@
                 </div>
             </div>
 
-            <div class="xp-actions">
-                <button type="button" class="xp-button primary" @onclick="HandleLogin">Login</button>
-                <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
+            <div class="xp-bottom-row">
+                <div class="xp-error-message">@errorMessage</div>
+
+                <div class="xp-actions">
+                    <button type="button" class="xp-button primary" @onclick="HandleLogin">Login</button>
+                    <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
+                </div>
             </div>
         </div>
     </div>
@@ -49,10 +54,12 @@
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
 
+    private string errorMessage { get; set; } = string.Empty;
 
     private async Task HandleLogin()
     {
-        if (await AuthService.Login(username, password))
+        var result = await AuthService.Login(username, password);
+        if (result == HttpStatusCode.OK)
         {
             NavigationManager.NavigateTo("/desktop");
             return;
@@ -60,6 +67,7 @@
         else
         {
             // Handle login failure (e.g., show an error message)
+            errorMessage = $"Login failed ({result})";
         }
     }
 
