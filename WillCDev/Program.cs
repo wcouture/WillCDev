@@ -9,10 +9,17 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext with MySQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var mode = builder.Configuration.GetConnectionString("Mode") ?? string.Empty;
+var connectionString = builder.Configuration.GetConnectionString(mode) 
+    ?? throw new InvalidOperationException($"Connection string for mode: '{mode}' not found.");
+
 builder.Services.AddDbContext<AuthDbContext>(options =>
-    options.UseMySQL(connectionString));
+{
+    if (mode.Equals("mysql", StringComparison.OrdinalIgnoreCase))
+        options.UseMySQL(connectionString);
+    else if (mode.Equals("sqlite", StringComparison.OrdinalIgnoreCase))
+        options.UseSqlite(connectionString);
+});
 
 
 builder.Services.AddHttpClient("Self", client =>
