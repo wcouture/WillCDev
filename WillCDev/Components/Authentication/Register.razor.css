@@ -96,7 +96,6 @@
         display: flex;
         justify-content: flex-end;
         gap: 8px;
-        margin-top: 18px;
     }
 
     .xp-button {
@@ -114,3 +113,15 @@
     .xp-button.primary {
         background: linear-gradient(to bottom, #f6fafc 0%, #d7e6ff 100%);
     }
+
+.xp-bottom-row {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.xp-error-message {
+    font-size: 9pt;
+    color: red;
+}

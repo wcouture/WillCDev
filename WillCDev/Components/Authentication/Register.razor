@@ -25,10 +25,15 @@
                 </div>
             </div>
 
-            <div class="xp-actions">
-                <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
-                <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
+            <div class="xp-bottom-row">
+                <div class="xp-error-message">@errorMessage</div>
+
+                <div class="xp-actions">
+                    <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
+                    <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -45,6 +50,7 @@
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
 
+    private string errorMessage { get; set; } = string.Empty;
 
     private async Task HandleRegister()
     {
@@ -53,10 +59,12 @@
         {
             NavigationManager.NavigateTo("/login");
             return;
+        } 
+        else
+        {
+            errorMessage = $"Registration failed: ({response})";
         }
     }
-
-
 
     private void HandleCancel()
     {
