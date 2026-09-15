@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using Shared.Services
 @using Microsoft.AspNetCore.Components.Authorization
+@using WillCDev.Components.UI
 @inject NavigationManager NavigationManager
 
 <PageTitle>Register</PageTitle>
@@ -18,19 +19,26 @@
                 <div class="xp-user-icon" aria-hidden="true">👤</div>
                 <div class="xp-form">
                     <label for="username">User name</label>
-                    <input id="username" type="text" @bind="username" />
+                    <input id="username" type="text" @bind="username" disabled="@isLoading" />
 
                     <label for="password">Password</label>
-                    <input id="password" type="password" @bind="password" />
+                    <input id="password" type="password" @bind="password" disabled="@isLoading"/>
                 </div>
             </div>
 
             <div class="xp-bottom-row">
-                <div class="xp-error-message">@errorMessage</div>
-
+                @if (isLoading)
+                {
+                    <Spinner/>
+                }
+                else
+                {
+                    <div class="xp-error-message">@errorMessage</div>
+                }
+                
                 <div class="xp-actions">
-                    <button type="button" class="xp-button secondary" @onclick="HandleCancel">Cancel</button>
-                    <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
+                    <button type="button" class="xp-button secondary" @onclick="HandleCancel" disabled="@isLoading">Cancel</button>
+                    <button type="button" class="xp-button primary" @onclick="HandleRegister" disabled="@isLoading">Register</button>
                 </div>
             </div>
 
@@ -46,6 +54,7 @@
     [Inject]
     public required IHttpClientFactory HttpClientFactory { get; set; }
 
+    private bool isLoading { get; set; } = false;
 
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
@@ -54,6 +63,10 @@
 
     private async Task HandleRegister()
     {
+        isLoading = true;
+        await Task.Delay(500);
+
+
         var response = await AuthService.Register(username, password);
         if (response == System.Net.HttpStatusCode.OK)
         {
@@ -64,10 +77,18 @@
         {
             errorMessage = $"Registration failed: ({response})";
         }
+
+        isLoading = false;
     }
 
     private void HandleCancel()
     {
         NavigationManager.NavigateTo("/login");
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await AuthService.IsAuthenticated())
+            NavigationManager.NavigateTo("/", true);
     }
 }

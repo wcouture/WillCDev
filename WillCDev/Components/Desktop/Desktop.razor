@@ -47,27 +47,15 @@
     [Inject]
     public required IAuthService AuthService { get; set; }
 
-    protected override async Task OnInitializedAsync() 
-    {
-        if (!await AuthService.IsAuthenticated())
-        {
-            NavigationManager.NavigateTo("/login", true);
-        }
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JS.InvokeVoidAsync("InitWindows");
-
-        if (bringWindowToFront && windowToBringToFrontId != -1)
-        {
-            await JS.InvokeVoidAsync("BringToFront", windowToBringToFrontId);
-            bringWindowToFront = false;
-            windowToBringToFrontId = -1;
-        }
-
         if (firstRender)
         {
+            if (!await AuthService.IsAuthenticated())
+            {
+                NavigationManager.NavigateTo("/login", true);
+            }
+
             await ApplicationService.Init();
             ApplicationService.SubscribeToBringToFrontWindows(BringWindowToFront);
             ApplicationService.SubscribeToUpdatesDesktop(UpdateDesktopIcons);
@@ -77,6 +65,20 @@
                 ApplicationService.SubscribeToUpdatesTaskBar(taskBar.UpdateTaskBarPrograms);
 
             await ApplicationService.RefreshApplicationData();
+        }
+
+        await InitWindows();
+    }
+
+    private async Task InitWindows()
+    {
+        await JS.InvokeVoidAsync("InitWindows");
+
+        if (bringWindowToFront && windowToBringToFrontId != -1)
+        {
+            await JS.InvokeVoidAsync("BringToFront", windowToBringToFrontId);
+            bringWindowToFront = false;
+            windowToBringToFrontId = -1;
         }
     }
 

@@ -3,6 +3,7 @@
 @using System.Net
 @using Microsoft.AspNetCore.Components.Authorization
 @using Shared.Services
+@using WillCDev.Components.UI
 
 @inject NavigationManager NavigationManager
 
@@ -28,8 +29,14 @@
             </div>
 
             <div class="xp-bottom-row">
-                <div class="xp-error-message">@errorMessage</div>
-
+                @if (isLoading)
+                {
+                    <Spinner/>
+                }
+                else
+                {
+                    <div class="xp-error-message">@errorMessage</div>
+                }
                 <div class="xp-actions">
                     <button type="button" class="xp-button primary" @onclick="HandleLogin">Login</button>
                     <button type="button" class="xp-button primary" @onclick="HandleRegister">Register</button>
@@ -50,6 +57,7 @@
     [Inject]
     public required IJSRuntime JS { get; set; }
 
+    private bool isLoading { get; set; } = false;
 
     private string username {get; set;} = string.Empty;
     private string password {get; set;} = string.Empty;
@@ -58,6 +66,9 @@
 
     private async Task HandleLogin()
     {
+        isLoading = true;
+        await Task.Delay(500);
+
         var result = await AuthService.Login(username, password);
         if (result == HttpStatusCode.OK)
         {
@@ -69,6 +80,8 @@
             // Handle login failure (e.g., show an error message)
             errorMessage = $"Login failed ({result})";
         }
+
+        isLoading = false;
     }
 
     private void HandleRegister()
@@ -79,5 +92,11 @@
     private async Task HandleCancel()
     {
         await JS.InvokeVoidAsync("window.close");
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await AuthService.IsAuthenticated())
+            NavigationManager.NavigateTo("/", true);
     }
 }

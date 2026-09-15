@@ -26,6 +26,7 @@
     .window-frame.start {
         width: 0dvw;
         height: 0dvh;
+        overflow: hidden;
     }
 
     .window-frame.start .window-body {
@@ -110,6 +111,7 @@
     .start-menu-frame.start {
         width: 0;
         height: 0;
+        overflow: hidden;
     }
 
 .window-click-catcher {
