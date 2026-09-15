@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Components;
 namespace WillCDev.Components.Programs.StartMenu
 {
     [Program("Start Menu", iconName: "start")]
-    public partial class StartMenu
+    public partial class StartMenu : IProgram
     {
+        [Parameter]
+        public int AppId { get; set; }
     }
 }

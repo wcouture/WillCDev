@@ -2,6 +2,6 @@ namespace Shared.Models
 {
     public interface IProgram
     {
-        ProgramWindow? WindowSetting { get; set; }
+        public int AppId { get; set; }
     }
 }

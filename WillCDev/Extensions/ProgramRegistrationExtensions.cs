@@ -15,7 +15,7 @@ namespace WillCDev.Extensions
             var registry = new ProgramRegistry();
             var assembly = typeof(App).Assembly;
 
-            foreach (var type in assembly.GetTypes().Where(t => typeof(ComponentBase).IsAssignableFrom(t)))
+            foreach (var type in assembly.GetTypes().Where(t => typeof(IProgram).IsAssignableFrom(t)))
             {
                 var attribute = type.GetCustomAttribute<ProgramAttribute>();
                 if (attribute != null)

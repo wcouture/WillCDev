@@ -31,7 +31,7 @@
         <div class="window-body" >
             @if (ProgramAttribute != null)
             {
-                <DynamicComponent Type="@ProgramAttribute.ComponentType" />
+                <DynamicComponent Type="@ProgramAttribute.ComponentType" Parameters="programParameters"/>
             }
             else
             {
@@ -63,6 +63,8 @@
 
     public string WindowTitle { get; set; } = "Window Title";
 
+    private Dictionary<string, object> programParameters = new Dictionary<string, object>();
+
     private ProgramAttribute? ProgramAttribute { get; set; }
 
     protected override void OnAfterRender(bool firstRender)
@@ -78,6 +80,7 @@
         if (WindowSetting != null)
         {
             ProgramAttribute = ProgramRegistry.GetProgram(WindowSetting.ProgramId);
+            programParameters.TryAdd("AppId", WindowSetting.AppId);
         }
     }
 
