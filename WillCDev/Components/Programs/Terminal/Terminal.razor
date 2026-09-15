@@ -62,7 +62,7 @@
             var handler = ActivatorUtilities.CreateInstance(ServiceProvider, commandAttribute.HandlerType) as CommandHandlerBase;
             if (handler != null)
             {
-                await handler.HandleCommand(consoleLines, args);
+                await handler.HandleCommand(AppId, consoleLines, args);
             }
         } else
         {

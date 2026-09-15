@@ -8,7 +8,7 @@ namespace WillCDev.Commands
     {
         private readonly ICommandRegistry _commandRegistry = commandRegistry;
 
-        public override Task HandleCommand(List<string> consoleLines, params string[] args)
+        public override Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
         {
             var commands = _commandRegistry.GetCommands();
 

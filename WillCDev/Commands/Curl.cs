@@ -8,7 +8,7 @@ namespace WillCDev.Commands
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public override async Task HandleCommand(List<string> consoleLines, params string[] args)
+        public override async Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
         {
             // Implement curl command logic here
             using (var client = _httpClientFactory.CreateClient())
