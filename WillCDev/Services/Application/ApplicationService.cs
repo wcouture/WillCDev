@@ -57,7 +57,7 @@ namespace WillCDev.Services
             }
         }
 
-        public List<Application?> GetApplications() => applications.ToList();
+        public List<Application?> GetApplications() => applications.Where(a => a != null).ToList();
 
         public Task<int> AddApplication(Application application)
         {
