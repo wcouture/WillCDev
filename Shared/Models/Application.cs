@@ -7,5 +7,6 @@
         public string IconName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int ProgramId { get; set; } = -1;
+        public bool IsActive { get; set; } = false;
     }
 }

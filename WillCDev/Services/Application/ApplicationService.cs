@@ -99,6 +99,7 @@ namespace WillCDev.Services
                 };
                 await _windowService.OpenWindow(window);
                 await _taskbarService.ToggleTaskBarProgramActiveState(appId, true);
+                application.IsActive = true;
             }
         }
 
@@ -111,6 +112,7 @@ namespace WillCDev.Services
             {
                 await _windowService.CloseWindow(appId);
                 await _taskbarService.ToggleTaskBarProgramActiveState(appId, false);
+                application.IsActive = false;
             }
         }
 
