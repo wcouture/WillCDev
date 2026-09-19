@@ -8,6 +8,7 @@ namespace Shared.Attributes
         private static int _nextId = 1;
         public int Id { get; set; } = -1;
         public string Command { get; set; } = string.Empty;
+        public string[] Description { get; set; } = Array.Empty<string>();
         public Type HandlerType { get; set; } = typeof(CommandHandlerBase);
 
         public CommandAttribute(string command)

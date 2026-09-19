@@ -31,4 +31,5 @@
     padding: 0 0.25em;
     max-width: 100%;
     font-size: 10pt;
+    white-space: pre-wrap;
 }

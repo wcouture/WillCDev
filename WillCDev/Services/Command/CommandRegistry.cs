@@ -26,7 +26,7 @@ namespace WillCDev.Services
             {
                 return commandAttribute;
             }
-            return null;
+            throw new KeyNotFoundException($"Command '{command}' not found.");
         }
         public IDictionary<string, CommandAttribute> GetCommands()
         {
