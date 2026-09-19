@@ -86,7 +86,8 @@ namespace WillCDev.Services
 
         public async Task StartApplication(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
@@ -101,11 +102,16 @@ namespace WillCDev.Services
                 await _taskbarService.ToggleTaskBarProgramActiveState(appId, true);
                 application.IsActive = true;
             }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
+            }
         }
 
         public async Task StopApplication(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
@@ -114,11 +120,16 @@ namespace WillCDev.Services
                 await _taskbarService.ToggleTaskBarProgramActiveState(appId, false);
                 application.IsActive = false;
             }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
+            }
         }
 
         public async Task CreateDesktopShortcut(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
@@ -131,11 +142,16 @@ namespace WillCDev.Services
                 };
                 await _desktopService.AddDesktopShortcut(shortcut);
             }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
+            }
         }
 
         public async Task CreateTaskBarIcon(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
@@ -151,27 +167,41 @@ namespace WillCDev.Services
                 };
                 await _taskbarService.AddTaskBarProgram(program);
             }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
+            }
         }
 
         public async Task DeleteDesktopShortcut(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
             {
                 await _desktopService.RemoveDesktopShortcut(appId);
             }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
+            }
         }
 
         public async Task DeleteTaskBarIcon(int appId)
         {
-            if (appId <= -1) return;
+            if (appId <= -1 || appId >= MaxApplications)
+                throw new ArgumentOutOfRangeException(nameof(appId));
 
             var application = applications[appId];
             if (application is not null && application.Id == appId)
             {
                 await _taskbarService.RemoveTaskBarProgram(appId);  
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Application with ID {appId} not found.");
             }
         }
 

@@ -3,7 +3,7 @@
     [AttributeUsage(AttributeTargets.Class)]
     public class ProgramAttribute : Attribute
     {
-        private static int ProgramCount { get; set; } = 0;
+        private static int ProgramCount { get; set; } = 1000;
         public int ID { get; set; } = 0;
 
         public string Name { get; set; } = string.Empty;

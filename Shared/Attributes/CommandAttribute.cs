@@ -13,7 +13,7 @@ namespace Shared.Attributes
         public CommandAttribute(string command)
         {
             Id = _nextId++;
-            Command = command.ToUpper();
+            Command = command.ToLower();
         }
     }
 }

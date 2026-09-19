@@ -22,7 +22,7 @@ namespace WillCDev.Services
         }
         public CommandAttribute? GetCommand(string command)
         {
-            if (_commands.TryGetValue(command.ToUpper(), out var commandAttribute))
+            if (_commands.TryGetValue(command.ToLower(), out var commandAttribute))
             {
                 return commandAttribute;
             }

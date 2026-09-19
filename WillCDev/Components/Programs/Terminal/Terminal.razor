@@ -49,7 +49,7 @@
         var command = parts.Length > 0 ? parts[0] : string.Empty;
         var args = parts.Length > 1 ? parts[1..] : Array.Empty<string>();
 
-        consoleLines.Add(input);
+        consoleLines.Add("$> " + input);
         await RouteCommand(command, args);
         StateHasChanged();
     }
