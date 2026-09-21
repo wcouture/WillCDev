@@ -7,7 +7,6 @@
 
     background-color: black;
     color: white;
-    font-family: 'MS UI Gothic';
 
     display: flex;
     flex-direction: column;
@@ -22,6 +21,8 @@
     gap: 1px;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
+    -ms-overflow-style:none;
     flex: 1;
     min-height: 0;
 }

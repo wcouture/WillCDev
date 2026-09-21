@@ -6,12 +6,12 @@ namespace WillCDev.Commands
     [Command("echo")]
     public class Echo : CommandHandlerBase
     {
-        public override Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             int numArgs = args.Length;
 
             string output = string.Join(" ", args);
-            consoleLines.Add(output);
+            feedController.AddLine(output);
 
             return Task.CompletedTask;
         }

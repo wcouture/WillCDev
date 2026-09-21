@@ -17,7 +17,7 @@ namespace WillCDev.Commands
     {
         private readonly ICommandRegistry _commandRegistry = commandRegistry;
 
-        public override Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             try
             {
@@ -28,8 +28,11 @@ namespace WillCDev.Commands
                     // Print the description of the specified command
                     var command = _commandRegistry.GetCommand(args[0]);
                     var descLines = command?.Description.Length > 0 ? command.Description : new string[] { "No description available." };
-                    consoleLines.Add(command.Command);
-                    consoleLines.AddRange(descLines);
+                    feedController.AddLine(command.Command);
+                    foreach (var line in descLines)
+                    {
+                        feedController.AddLine(line);
+                    }
                 }
                 else
                 {
@@ -37,19 +40,22 @@ namespace WillCDev.Commands
                     var commands = _commandRegistry.GetCommands();
                     foreach (var command in commands)
                     {
-                        consoleLines.Add(command.Key);
+                        feedController.AddLine(command.Key);
                         // Print the description of the command if allMode is enabled
                         if (allMode)
                         {
                             var descLines = command.Value.Description.Length > 0 ? command.Value.Description : new string[] { "No description available." };
-                            consoleLines.AddRange(descLines);
+                            foreach(var line in descLines)
+                            { 
+                                feedController.AddLine(line); 
+                            }
                         }
                     }
                 }
             }
             catch (KeyNotFoundException ex)
             {
-                consoleLines.Add(ex.Message);
+                feedController.AddLine(ex.Message);
             }
             return Task.CompletedTask;
         }

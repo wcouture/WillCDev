@@ -6,19 +6,19 @@ namespace WillCDev.Commands
     [Command("apps")]
     public class Apps(IApplicationService applicationService) : CommandHandlerBase
     {
-        public override Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             var apps = applicationService.GetApplications();
             string listHeader = $"{"ID",-5} | {"Program ID",-10} | {"Active",-6} | {"Name", -20}";
-            consoleLines.Add(listHeader);
-            consoleLines.Add(new string('-', listHeader.Length));
+            feedController.AddLine(listHeader);
+            feedController.AddLine(new string('-', listHeader.Length));
 
             foreach (var app in apps) 
             {
                 bool active = app.IsActive;
                 string activeString = active.ToString();
-                string appInfo = $"{app.Id,-5} | {app.ProgramId,-15} | {activeString,-6} | {app.Name}";
-                consoleLines.Add(appInfo);
+                string appInfo = $"{app.Id,-5} | {app.ProgramId,-10} | {activeString,-6} | {app.Name}";
+                feedController.AddLine(appInfo);
             }
             return Task.CompletedTask;
         }
