@@ -66,20 +66,18 @@
 
             await ApplicationService.RefreshApplicationData();
         }
-
-        await InitWindows();
     }
 
     private async Task InitWindows()
     {
-        await JS.InvokeVoidAsync("InitWindows");
+        @* await JS.InvokeVoidAsync("InitWindows");
 
         if (bringWindowToFront && windowToBringToFrontId != -1)
         {
-            await JS.InvokeVoidAsync("BringToFront", windowToBringToFrontId);
+            await JS.InvokeVoidAsync("FocusWindow", windowToBringToFrontId);
             bringWindowToFront = false;
             windowToBringToFrontId = -1;
-        }
+        } *@
     }
 
     private async Task UpdateWindows(ProgramWindow?[] updatedWindows)
@@ -98,10 +96,9 @@
     private async Task BringWindowToFront(int windowId)
     {
         var windowToBringToFront = windows.FirstOrDefault(w => w?.ID == windowId);
-        if (windowToBringToFront != null){
-            bringWindowToFront = true;
-            windowToBringToFrontId = windowId;
-            await InvokeAsync(StateHasChanged);
+        if (windowToBringToFront != null)
+        {
+            await JS.InvokeVoidAsync("FocusWindow", windowId);
         }
     }
 }

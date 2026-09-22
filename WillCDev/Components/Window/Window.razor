@@ -8,7 +8,7 @@
 
 @if (WindowSetting != null && ProgramAttribute?.ComponentType != typeof(StartMenu))
 {
-    <section id="@WindowSetting.ID" class="window-frame start draggable">
+    <section id="window-@WindowSetting.ID" class="window-frame start draggable">
         <div class="title-bar">
             <div class="window-icon">
                 <Icon IconName="Application Window" />
@@ -41,7 +41,7 @@
     </section>
 } else if (WindowSetting != null && ProgramAttribute?.ComponentType == typeof(StartMenu))
 {
-        <div id="@WindowSetting.ID" class="start-menu-frame start">
+        <div id="window-@WindowSetting.ID" class="start-menu-frame start">
             <StartMenu />
         </div>
         <section class="window-click-catcher" @onclick="OnCloseWindow"></section>
@@ -67,11 +67,19 @@
 
     private ProgramAttribute? ProgramAttribute { get; set; }
 
-    protected override void OnAfterRender(bool firstRender)
+    private bool isWindowOpen = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (WindowSetting != null && !isWindowOpen)
+        {
+            await JS.InvokeVoidAsync("OpenWindow", WindowSetting?.ID, WindowSetting?.WindowTitle, ProgramAttribute?.ShrinkWindowOnLoad == true);
+            isWindowOpen = true;
+        }
+
         if (firstRender && ProgramAttribute?.ShrinkWindowOnLoad == true)
         {
-            JS.InvokeVoidAsync("ShrinkWindow", WindowSetting?.ID);
+            await JS.InvokeVoidAsync("ShrinkWindow", WindowSetting?.ID);
         }
     }
 

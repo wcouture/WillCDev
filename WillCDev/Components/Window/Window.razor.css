@@ -23,6 +23,11 @@
         height: 50dvh;
     }
 
+    .window-frame.init.shrunken {
+        height: min-content;
+        max-width: 40dvw;
+    }
+
     .window-frame.start {
         width: 0dvw;
         height: 0dvh;
