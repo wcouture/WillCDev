@@ -3,7 +3,15 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("open")]
+    [Command("open", Description = new string[]
+    {
+        "- Format:",
+        "   open [AppId]",
+        "- Description:",
+        "   Opens the specified application.",
+        "- Parameters/Flags:",
+        "   [AppId] => The ID of the application to open",
+    })]
     public class Open(IApplicationService applicationService) : CommandHandlerBase
     {
         public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)

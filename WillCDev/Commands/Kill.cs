@@ -3,7 +3,15 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("kill")]
+    [Command("kill", Description = new string[]
+    {
+        "- Format:",
+        "   kill [AppId]",
+        "- Description:",
+        "   Terminates the specified application.",
+        "- Parameters/Flags:",
+        "   [AppId] => The ID of the application to terminate",
+    })]
     public class Kill(IApplicationService applicationService) : CommandHandlerBase
     {
         public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)

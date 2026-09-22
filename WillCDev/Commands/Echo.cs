@@ -3,7 +3,15 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("echo")]
+    [Command("echo", Description = new string[]
+    {
+        "- Format:",
+        "   echo [text]",
+        "- Description:",
+        "   Prints the specified text to the feed.",
+        "- Parameters/Flags:",
+        "   [text] => The text to print",
+    })]
     public class Echo : CommandHandlerBase
     {
         public override Task HandleCommand(int AppId, IFeedController feedController, params string[] args)

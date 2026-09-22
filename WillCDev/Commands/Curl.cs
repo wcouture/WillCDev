@@ -3,7 +3,15 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("curl")]
+    [Command("curl", Description = new string[]
+    {
+        "- Format:",
+        "   curl [url]",
+        "- Description:",
+        "   Fetches the content of the specified URL.",
+        "- Parameters/Flags:",
+        "   [url] => The URL to fetch",
+    })]
     public class Curl(IHttpClientFactory httpClientFactory) : CommandHandlerBase
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;

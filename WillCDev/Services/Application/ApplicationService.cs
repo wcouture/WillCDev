@@ -116,8 +116,8 @@ namespace WillCDev.Services
             var application = applications[appId];
             if (application is not null && application.Id == appId)
             {
-                await _windowService.CloseWindow(appId);
-                await _taskbarService.ToggleTaskBarProgramActiveState(appId, false);
+                _ = _windowService.CloseWindow(appId).ConfigureAwait(false);
+                _ = _taskbarService.ToggleTaskBarProgramActiveState(appId, false);
                 application.IsActive = false;
             }
             else

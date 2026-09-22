@@ -1,13 +1,15 @@
 using Shared.Attributes;
 using Shared.Services;
 using Shared.Models;
+using Microsoft.JSInterop;
 
 namespace WillCDev.Services
 {
     [Service(typeof(IWindowService), ServiceType.Scoped)]
-    public class WindowService(IProgramRegistry programRegistry) : IWindowService
+    public class WindowService(IProgramRegistry programRegistry, IJSRuntime jsRuntime) : IWindowService
     {
         private readonly IProgramRegistry _programRegistry = programRegistry;
+        private readonly IJSRuntime _jsRuntime = jsRuntime;
 
         private const int MaximumWindows = 32;
         public ProgramWindow?[] Windows { get => windows; }
@@ -43,6 +45,15 @@ namespace WillCDev.Services
         }
         public async Task CloseWindow(int appId)
         {
+            try
+            {
+                int waitMilliseconds = await _jsRuntime.InvokeAsync<int>("CloseWindow", appId);
+                await Task.Delay(waitMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Error closing window:", ex.Message);
+            }
             var window = windows.FirstOrDefault(w => w?.AppId == appId);
             if (window is not null)
             {

@@ -3,7 +3,13 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("exit")]
+    [Command("exit", Description = new string[]
+    {
+        "- Format:",
+        "   exit",
+        "- Description:",
+        "   Closes the terminal.",
+    })]
     public class Exit(IApplicationService applicationService) : CommandHandlerBase
     {
         public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)

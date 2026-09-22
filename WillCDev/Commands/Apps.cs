@@ -3,7 +3,13 @@ using Shared.Services;
 
 namespace WillCDev.Commands
 {
-    [Command("apps")]
+    [Command("apps", Description = new string[]
+    {
+        "- Format:",
+        "   apps",
+        "- Description:",
+        "   Lists installed applications."
+    })]
     public class Apps(IApplicationService applicationService) : CommandHandlerBase
     {
         public override Task HandleCommand(int AppId, IFeedController feedController, params string[] args)

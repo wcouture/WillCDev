@@ -75,6 +75,9 @@
         {
             await JS.InvokeVoidAsync("OpenWindow", WindowSetting?.ID, WindowSetting?.WindowTitle, ProgramAttribute?.ShrinkWindowOnLoad == true);
             isWindowOpen = true;
+        } else if (WindowSetting == null)
+        {
+            isWindowOpen = false;
         }
 
         if (firstRender && ProgramAttribute?.ShrinkWindowOnLoad == true)
@@ -96,8 +99,6 @@
     {
         if (WindowSetting != null)
         {
-            int waitMilliseconds = await JS.InvokeAsync<int>("CloseWindow", WindowSetting.ID);
-            await Task.Delay(waitMilliseconds);
             await ApplicationService.StopApplication(WindowSetting.AppId);
             isWindowOpen = false;
         }
