@@ -6,7 +6,7 @@ namespace WillCDev.Commands
     [Command("help", Description = new string[]
     {
         "- Format:",
-        "   help [command?]\n",
+        "   help [command?]",
         "- Description:",
         "   Lists available commands || Prints command description.",
         "- Parameters/Flags:",
@@ -28,7 +28,7 @@ namespace WillCDev.Commands
                     // Print the description of the specified command
                     var command = _commandRegistry.GetCommand(args[0]);
                     var descLines = command?.Description.Length > 0 ? command.Description : new string[] { "No description available." };
-                    feedController.AddLine(command.Command);
+                    feedController.AddLine("#### " + command.Command + " ####");
                     foreach (var line in descLines)
                     {
                         feedController.AddLine(line);

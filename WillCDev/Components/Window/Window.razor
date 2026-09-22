@@ -99,6 +99,7 @@
             int waitMilliseconds = await JS.InvokeAsync<int>("CloseWindow", WindowSetting.ID);
             await Task.Delay(waitMilliseconds);
             await ApplicationService.StopApplication(WindowSetting.AppId);
+            isWindowOpen = false;
         }
     }
 }
