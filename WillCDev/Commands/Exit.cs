@@ -6,7 +6,7 @@ namespace WillCDev.Commands
     [Command("exit")]
     public class Exit(IApplicationService applicationService) : CommandHandlerBase
     {
-        public override async Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             try
             {
@@ -14,7 +14,7 @@ namespace WillCDev.Commands
             }
             catch (Exception ex)
             {
-                consoleLines.Add($"Error: An unexpected error occurred while trying to exit the application. Details: {ex.Message}");
+                feedController.AddLine($"Error: An unexpected error occurred while trying to exit the application. Details: {ex.Message}");
             }
         }
     }

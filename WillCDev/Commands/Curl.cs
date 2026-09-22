@@ -8,7 +8,7 @@ namespace WillCDev.Commands
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public override async Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             // Implement curl command logic here
             using (var client = _httpClientFactory.CreateClient())
@@ -18,7 +18,7 @@ namespace WillCDev.Commands
                 {
                     var response = await client.GetAsync(url);
                     var content = await response.Content.ReadAsStringAsync();
-                    consoleLines.Add(content);
+                    feedController.AddLine(content);
                 }
             }
 

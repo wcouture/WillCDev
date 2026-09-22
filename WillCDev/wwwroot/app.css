@@ -7,9 +7,9 @@ body {
     --window-color: #2d78ea;
     --window-background-color: #fafae3;
     --window-animation-speed: 0.2s ease-in-out;
-
     --terminal-input-height: 2em;
-    font-family: monospace;
+    --os-font: "Consolas", "Monaco", monospace;
+    font-family: "Consolas", "Monaco", monospace;
 }
 
 

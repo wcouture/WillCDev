@@ -46,7 +46,7 @@
     position:relative;
     flex: 1;
     min-height: 0;
-    overflow: scroll;
+    overflow: auto;
     opacity: 1;
 }
 

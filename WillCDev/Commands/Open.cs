@@ -6,11 +6,12 @@ namespace WillCDev.Commands
     [Command("open")]
     public class Open(IApplicationService applicationService) : CommandHandlerBase
     {
-        public override async Task HandleCommand(int AppId, List<string> consoleLines, params string[] args)
+        public override async Task HandleCommand(int AppId, IFeedController feedController, params string[] args)
         {
             if (args.Length == 0)
             {
-                consoleLines.Add("Error: No application ID provided.");
+                feedController.AddLine("Error: No application ID provided.");
+                return;
             }
 
             try
@@ -21,19 +22,19 @@ namespace WillCDev.Commands
             }
             catch (FormatException ex)
             {
-                consoleLines.Add($"Error: Invalid application ID '{args[0]}'. Please provide a valid integer.");
+                feedController.AddLine($"Error: Invalid application ID '{args[0]}'. Please provide a valid integer.");
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                consoleLines.Add($"Error: Application ID '{args[0]}' is out of range. Please provide a valid application ID.");
+                feedController.AddLine($"Error: Application ID '{args[0]}' is out of range. Please provide a valid application ID.");
             }
             catch (KeyNotFoundException ex)
             {
-                consoleLines.Add($"Error: {ex.Message}");
+                feedController.AddLine($"Error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                consoleLines.Add($"Error: An unexpected error occurred while trying to open the application. Details: {ex.Message}");
+                feedController.AddLine($"Error: An unexpected error occurred while trying to open the application. Details: {ex.Message}");
             }
         }
     }

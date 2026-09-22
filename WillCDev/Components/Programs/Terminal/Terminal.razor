@@ -1,6 +1,7 @@
 ﻿@using Microsoft.JSInterop
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Shared.Services
+@using WillCDev.Services.Command
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
 
@@ -8,7 +9,7 @@
     <div class="text-scroll-panel" @onclick="FocusTerminalInput">
         @foreach (var command in consoleLines ?? [])
         {
-            <p class="console-line">@command</p>
+            <div class="console-line">@command</div>
         }
     </div>
     <TerminalInput @ref="_terminalInput"/>
@@ -24,10 +25,25 @@
     [Inject]
     public required IServiceProvider ServiceProvider { get; set; }
 
+    private IFeedController _feedController = new TerminalFeedController();
+
     private TerminalInput _terminalInput { get; set; } = default!;
 
     private List<string> consoleLines = new();
 
+    protected override void OnInitialized()
+    {
+        _feedController.SubscribeOnLineAdded(line =>
+        {
+            consoleLines.Add(line);
+            StateHasChanged();
+        });
+        _feedController.SubscribeOnCleared(() =>
+        {
+            consoleLines.Clear();
+            StateHasChanged();
+        });
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -56,17 +72,23 @@
 
     private async Task RouteCommand(string command, params string[] args)
     {
-        var commandAttribute = CommandRegistry.GetCommand(command);
-        if (commandAttribute != null)
+        try
         {
-            var handler = ActivatorUtilities.CreateInstance(ServiceProvider, commandAttribute.HandlerType) as CommandHandlerBase;
-            if (handler != null)
+            var commandAttribute = CommandRegistry.GetCommand(command);
+            if (commandAttribute != null)
             {
-                await handler.HandleCommand(AppId, consoleLines, args);
+                var handler = ActivatorUtilities.CreateInstance(ServiceProvider, commandAttribute.HandlerType) as CommandHandlerBase;
+                if (handler != null)
+                {
+                    await handler.HandleCommand(AppId, _feedController, args);
+                }
+            } else
+            {
+                _feedController.AddLine("Unrecognized Command");
             }
-        } else
+        } catch (Exception e)
         {
-            consoleLines.Add("Unrecognized Command");
+            _feedController.AddLine("Unrecognized Command");
         }
     }
 }
