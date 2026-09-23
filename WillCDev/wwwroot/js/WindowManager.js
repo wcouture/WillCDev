@@ -19,7 +19,9 @@ class WindowManager {
             console.log("Opening window with id:", id, "and title:", title);
             const windowElement = $('#window-'+id);
             windowElement.draggable(); // Make the window draggable
-            windowElement.resizable(); // Make the window resizable
+            windowElement.resizable({
+                helper: "ui-resizable-helper" // Add a helper for resizing
+            }); // Make the window resizable
             windowElement.on("mousedown", () => {
                 this.bringWindowToFront(id);
             });

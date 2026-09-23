@@ -12,6 +12,9 @@ body {
     font-family: "Consolas", "Monaco", monospace;
 }
 
+.ui-resize-helper {
+    border: 2px dotted #00F;
+}
 
 /* Display utilities */
 .d-flex {

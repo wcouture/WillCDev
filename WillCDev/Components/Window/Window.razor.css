@@ -38,11 +38,11 @@
         opacity: 0;
     }
 
-
 .window-body {
     border: 1px solid #ffffff81;
     background-color: var(--window-background-color);
     margin: 0;
+    padding: 0;
     position:relative;
     flex: 1;
     min-height: 0;
