@@ -363,7 +363,7 @@
         <tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
         <tr><td class="prop-name">Id</td><td class="prop-type">Guid</td><td class="prop-default">new Guid()</td><td class="prop-desc">Unique user identifier.</td></tr>
 <tr><td class="prop-name">Username</td><td class="prop-type">string (required)</td><td class="prop-default">—</td><td class="prop-desc">The user's login username. Must be unique.</td></tr>
-<tr><td class="prop-name">PasswordHash</td><td class="prop-type">string (required)</td><td class="prop-default">—</td><td class="prop-desc">Currently stores the plaintext password. Should be a hash in production.</td></tr>
+<tr><td class="prop-name">PasswordHash</td><td class="prop-type">string (required)</td><td class="prop-default">—</td><td class="prop-desc">⚠️ <strong>Security Note:</strong> Despite the name, the current implementation stores plaintext passwords. This is a critical security vulnerability. Before any production deployment this field must store a proper cryptographic hash produced by a vetted algorithm such as <code>BCrypt</code>, <code>Argon2</code>, or ASP.NET Core's <code>IPasswordHasher&lt;T&gt;</code>. The property name <code>PasswordHash</code> is misleading until this is fixed.</td></tr>
 <tr><td class="prop-name">Email</td><td class="prop-type">string?</td><td class="prop-default">null</td><td class="prop-desc">Optional email address.</td></tr>
       </table>
     </div>
