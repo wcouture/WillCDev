@@ -20,7 +20,8 @@ class WindowManager {
             const windowElement = $('#window-'+id);
             windowElement.draggable(); // Make the window draggable
             windowElement.resizable({
-                helper: "ui-resizable-helper" // Add a helper for resizing
+                minHeight: 200, // Add a minimum height for resizing
+                minWidth: 200 // Add a minimum width for resizing
             }); // Make the window resizable
             windowElement.on("mousedown", () => {
                 this.bringWindowToFront(id);
