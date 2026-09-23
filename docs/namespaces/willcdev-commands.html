@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>WillCDev.Commands — WillCDev Docs</title>
+<style>    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #79c0ff;
+      --green: #3fb950;
+      --purple: #bc8cff;
+      --orange: #ffa657;
+      --red: #f85149;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      --radius: 8px;
+      --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent2); text-decoration: underline; }
+    code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .1em .35em;
+      font-family: var(--font-mono);
+      font-size: .85em;
+      color: var(--accent2);
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 1.5rem;
+    }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    nav { display: flex; gap: 1.2rem; margin-left: auto; font-size: .9rem; }
+    nav a { color: var(--text-muted); transition: color .2s; }
+    nav a:hover { color: var(--text); text-decoration: none; }
+
+    .breadcrumb {
+      padding: .75rem 2rem;
+      font-size: .85rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .breadcrumb a { color: var(--text-muted); }
+    .breadcrumb .sep { color: var(--text-dim); }
+    .breadcrumb .current { color: var(--text); }
+
+    .layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    aside {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      margin-bottom: .75rem;
+      padding: 0 .5rem;
+    }
+    .sidebar-link {
+      display: block;
+      padding: .35rem .65rem;
+      border-radius: 5px;
+      font-size: .875rem;
+      color: var(--text-muted);
+      transition: background .15s, color .15s;
+    }
+    .sidebar-link:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
+    .sidebar-link.active { background: rgba(88,166,255,.12); color: var(--accent); }
+    .sidebar-group { margin-bottom: 1.25rem; }
+
+    main { flex: 1; padding: 2.5rem 2rem; max-width: 900px; }
+
+    .page-header { margin-bottom: 2.5rem; }
+    .page-kind {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: .4rem;
+    }
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: .5rem;
+    }
+    .page-desc { color: var(--text-muted); font-size: 1rem; max-width: 700px; }
+
+    .tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: .15rem .7rem;
+      font-size: .75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-right: .35rem;
+    }
+    .tag.interface { border-color: rgba(88,166,255,.5); color: var(--accent); }
+    .tag.class-tag { border-color: rgba(63,185,80,.5); color: var(--green); }
+    .tag.abstract { border-color: rgba(188,140,255,.5); color: var(--purple); }
+    .tag.attribute { border-color: rgba(255,166,87,.5); color: var(--orange); }
+    .tag.static { border-color: rgba(248,81,73,.4); color: var(--red); }
+
+    /* ── Section ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .section-head {
+      padding: .85rem 1.25rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .section-body { padding: 1.25rem; }
+
+    /* ── Method / Property cards ── */
+    .member {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .member:last-child { margin-bottom: 0; }
+    .member-head {
+      padding: .75rem 1rem;
+      background: var(--surface2);
+      font-family: var(--font-mono);
+      font-size: .875rem;
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .member-name { color: var(--accent2); font-weight: 600; }
+    .member-type { color: var(--purple); }
+    .member-return { color: var(--green); margin-left: auto; font-size: .8rem; }
+    .member-body { padding: .9rem 1rem; font-size: .9rem; }
+    .member-desc { color: var(--text-muted); margin-bottom: .75rem; }
+    .param-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .param-list li {
+      display: flex;
+      gap: .75rem;
+      font-size: .875rem;
+      padding: .35rem .6rem;
+      background: var(--bg);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+    .param-name { color: var(--orange); flex-shrink: 0; }
+    .param-type { color: var(--purple); flex-shrink: 0; }
+    .param-desc { color: var(--text-muted); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: .85rem; }
+
+    .return-info {
+      margin-top: .75rem;
+      padding: .5rem .75rem;
+      background: rgba(63,185,80,.07);
+      border-left: 3px solid var(--green);
+      border-radius: 0 4px 4px 0;
+      font-size: .875rem;
+    }
+    .return-info .label { font-weight: 700; color: var(--green); font-size: .75rem; text-transform: uppercase; letter-spacing: .5px; margin-bottom: .15rem; }
+
+    /* ── Property table ── */
+    .prop-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    .prop-table th {
+      text-align: left;
+      padding: .5rem .75rem;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    .prop-table td { padding: .6rem .75rem; border-bottom: 1px solid rgba(48,54,61,.6); vertical-align: top; }
+    .prop-table tr:last-child td { border-bottom: none; }
+    .prop-table .prop-name { font-family: var(--font-mono); color: var(--accent2); }
+    .prop-table .prop-type { font-family: var(--font-mono); color: var(--purple); }
+    .prop-table .prop-default { font-family: var(--font-mono); color: var(--orange); font-size: .8rem; }
+    .prop-table .prop-desc { color: var(--text-muted); }
+
+    /* ── Inheritance chain ── */
+    .inherit-chain {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      font-size: .875rem;
+      margin-top: .75rem;
+    }
+    .inherit-chain .arrow { color: var(--text-dim); }
+    .inherit-chain .current-class { color: var(--text); font-weight: 700; }
+
+    /* ── Grid list of classes in namespace ── */
+    .class-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .class-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      transition: border-color .2s;
+    }
+    .class-card:hover { border-color: var(--accent); }
+    .class-card-kind { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-dim); margin-bottom: .3rem; }
+    .class-card-name { font-weight: 700; font-size: .95rem; color: var(--text); margin-bottom: .3rem; }
+    .class-card-desc { font-size: .8rem; color: var(--text-muted); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: .8rem;
+      color: var(--text-dim);
+    }</style>
+</head>
+<body>
+<header>
+  <div class="logo"><a href="../index.html" style="text-decoration:none;color:inherit;">Will<span>C</span>Dev</a></div>
+  <nav><a href="../index.html">Home</a><a href="shared-attributes.html">Attributes</a><a href="shared-services.html">Services</a><a href="willcdev-commands.html">Commands</a></nav>
+</header>
+<div class="breadcrumb"><a href="../index.html">Home</a><span class="sep">›</span><span class="current">WillCDev.Commands</span></div>
+<div class="layout">
+<aside>
+  <div class="sidebar-group">
+    <div class="sidebar-title">Shared.Attributes</div>
+    <a class="sidebar-link" href="../classes/CommandAttribute.html">CommandAttribute</a>
+    <a class="sidebar-link" href="../classes/ProgramAttribute.html">ProgramAttribute</a>
+    <a class="sidebar-link" href="../classes/ServiceAttribute.html">ServiceAttribute</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">Shared.Models</div>
+    <a class="sidebar-link" href="../classes/Application.html">Application</a>
+    <a class="sidebar-link" href="../classes/IProgram.html">IProgram</a>
+    <a class="sidebar-link" href="../classes/ProgramWindow.html">ProgramWindow</a>
+    <a class="sidebar-link" href="../classes/TaskBarProgram.html">TaskBarProgram</a>
+    <a class="sidebar-link" href="../classes/DesktopShortcut.html">DesktopShortcut</a>
+    <a class="sidebar-link" href="../classes/LoginRequest.html">LoginRequest</a>
+    <a class="sidebar-link" href="../classes/LoginResult.html">LoginResult</a>
+    <a class="sidebar-link" href="../classes/RegisterRequest.html">RegisterRequest</a>
+    <a class="sidebar-link" href="../classes/RegisterResult.html">RegisterResult</a>
+    <a class="sidebar-link" href="../classes/User.html">User</a>
+    <a class="sidebar-link" href="../classes/LogoutRequest.html">LogoutRequest</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">Shared.Services</div>
+    <a class="sidebar-link" href="../classes/IApplicationService.html">IApplicationService</a>
+    <a class="sidebar-link" href="../classes/IAuthService.html">IAuthService</a>
+    <a class="sidebar-link" href="../classes/ICommandHandler.html">ICommandHandler</a>
+    <a class="sidebar-link" href="../classes/ICommandRegistry.html">ICommandRegistry</a>
+    <a class="sidebar-link" href="../classes/IDesktopService.html">IDesktopService</a>
+    <a class="sidebar-link" href="../classes/IFeedController.html">IFeedController</a>
+    <a class="sidebar-link" href="../classes/IProgramRegistry.html">IProgramRegistry</a>
+    <a class="sidebar-link" href="../classes/ITaskbarService.html">ITaskbarService</a>
+    <a class="sidebar-link" href="../classes/IWindowService.html">IWindowService</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">WillCDev.Commands</div>
+    <a class="sidebar-link" href="../classes/Apps.html">Apps</a>
+    <a class="sidebar-link" href="../classes/Clear.html">Clear</a>
+    <a class="sidebar-link" href="../classes/Curl.html">Curl</a>
+    <a class="sidebar-link" href="../classes/Echo.html">Echo</a>
+    <a class="sidebar-link" href="../classes/Exit.html">Exit</a>
+    <a class="sidebar-link" href="../classes/Help.html">Help</a>
+    <a class="sidebar-link" href="../classes/Kill.html">Kill</a>
+    <a class="sidebar-link" href="../classes/Open.html">Open</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">WillCDev.Services</div>
+    <a class="sidebar-link" href="../classes/ApplicationService.html">ApplicationService</a>
+    <a class="sidebar-link" href="../classes/AuthService.html">AuthService</a>
+    <a class="sidebar-link" href="../classes/AuthDbContext.html">AuthDbContext</a>
+    <a class="sidebar-link" href="../classes/CommandRegistry.html">CommandRegistry</a>
+    <a class="sidebar-link" href="../classes/TerminalFeedController.html">TerminalFeedController</a>
+    <a class="sidebar-link" href="../classes/DesktopService.html">DesktopService</a>
+    <a class="sidebar-link" href="../classes/TaskbarService.html">TaskbarService</a>
+    <a class="sidebar-link" href="../classes/WindowService.html">WindowService</a>
+    <a class="sidebar-link" href="../classes/ProgramRegistry.html">ProgramRegistry</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">WillCDev.Extensions</div>
+    <a class="sidebar-link" href="../classes/CommandRegistrationExtensions.html">CommandRegistrationExtensions</a>
+    <a class="sidebar-link" href="../classes/ProgramRegistrationExtensions.html">ProgramRegistrationExtensions</a>
+    <a class="sidebar-link" href="../classes/ServiceRegistrationExtensions.html">ServiceRegistrationExtensions</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">WillCDev.Controllers</div>
+    <a class="sidebar-link" href="../classes/AuthController.html">AuthController</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-title">WillCDev.Components</div>
+    <a class="sidebar-link" href="../classes/AboutMe.html">AboutMe</a>
+    <a class="sidebar-link" href="../classes/StartMenu.html">StartMenu</a>
+    <a class="sidebar-link" href="../classes/Terminal.html">Terminal</a>
+  </div>
+</aside>
+<main>
+  <div class="page-header">
+    <div class="page-kind">Namespace</div>
+    <div class="page-title">WillCDev.Commands</div>
+    <div class="page-desc">Built-in terminal commands. Each class extends <a href="../classes/ICommandHandler.html">CommandHandlerBase</a> and is annotated with <code>[Command("name")]</code>. They are discovered automatically at startup via assembly scanning and can also be loaded from external DLL plugins.</div>
+  </div>
+  <div class="section">
+    <div class="section-head">⌨️ Command Classes</div>
+    <div class="section-body">
+      <div class="class-list">
+        <a href="../classes/Apps.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Apps</div><div class="class-card-desc"><code>apps</code> — Lists all installed application instances with their IDs, program IDs, active state, and names.</div></div></a>
+        <a href="../classes/Clear.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Clear</div><div class="class-card-desc"><code>clear</code> — Clears all output from the terminal feed.</div></div></a>
+        <a href="../classes/Curl.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Curl</div><div class="class-card-desc"><code>curl [url]</code> — Performs an HTTP GET request and prints the response body to the feed.</div></div></a>
+        <a href="../classes/Echo.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Echo</div><div class="class-card-desc"><code>echo [text]</code> — Prints the supplied arguments joined by spaces to the terminal feed.</div></div></a>
+        <a href="../classes/Exit.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Exit</div><div class="class-card-desc"><code>exit</code> — Closes the current terminal application instance.</div></div></a>
+        <a href="../classes/Help.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Help</div><div class="class-card-desc"><code>help [command?] [-a]</code> — Lists all commands or prints the description for a specific command.</div></div></a>
+        <a href="../classes/Kill.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Kill</div><div class="class-card-desc"><code>kill [AppId]</code> — Terminates the application instance with the given <code>AppId</code>.</div></div></a>
+        <a href="../classes/Open.html" style="text-decoration:none;color:inherit;"><div class="class-card"><div class="class-card-kind">Command · Class</div><div class="class-card-name">Open</div><div class="class-card-desc"><code>open [AppId]</code> — Starts (opens a window for) the application with the given <code>AppId</code>.</div></div></a>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<footer>WillCDev API Documentation &mdash; Generated from source</footer>
+</body>
+</html>
