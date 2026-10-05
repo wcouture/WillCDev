@@ -62,10 +62,11 @@ class WindowManager {
     closeWindow(windowId) {
         try {
             const windowInstance = this.windows.find(win => win.id === windowId);
-            if (windowInstance) {
-                this.windows = this.windows.filter(win => win !== windowInstance);
+            if (windowInstance === undefined) {
+                return 0;
             }
-    
+            
+            this.windows = this.windows.filter(win => win !== windowInstance);
             let windowElement = windowInstance.windowElement;
             windowElement.css("width", "0");
             windowElement.css("height", "0");

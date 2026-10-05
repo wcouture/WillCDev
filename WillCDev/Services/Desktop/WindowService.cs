@@ -45,15 +45,6 @@ namespace WillCDev.Services
         }
         public async Task CloseWindow(int appId)
         {
-            try
-            {
-                int waitMilliseconds = await _jsRuntime.InvokeAsync<int>("CloseWindow", appId);
-                await Task.Delay(waitMilliseconds);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine("Error closing window:", ex.Message);
-            }
             var window = windows.FirstOrDefault(w => w?.AppId == appId);
             if (window is not null)
             {

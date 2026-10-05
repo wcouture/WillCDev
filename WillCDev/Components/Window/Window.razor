@@ -99,6 +99,16 @@
     {
         if (WindowSetting != null)
         {
+            try
+            {
+                int waitMilliseconds = await JS.InvokeAsync<int>("CloseWindow", WindowSetting.ID);
+                await Task.Delay(waitMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error closing window with AppId|WindowId: {WindowSetting.AppId}|{WindowSetting.ID}   : {ex.Message}");
+            }
+            
             await ApplicationService.StopApplication(WindowSetting.AppId);
             isWindowOpen = false;
         }
