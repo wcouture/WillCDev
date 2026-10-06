@@ -1,0 +1,29 @@
+@implements IAsyncDisposable
+
+
+<section id="game-container" class="game-container">
+</section>
+
+@code {
+    [Inject]
+    private IJSRuntime JS { get; set; }
+
+    private IJSObjectReference? sugarGameModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            sugarGameModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/sugarGame.js");
+            await sugarGameModule.InvokeVoidAsync("initializeSugarGame", "game-container");
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (sugarGameModule != null)
+        {
+            await sugarGameModule.InvokeVoidAsync("disposeSugarGame", "game-container");
+            await sugarGameModule.DisposeAsync();
+        }
+    }  
+}

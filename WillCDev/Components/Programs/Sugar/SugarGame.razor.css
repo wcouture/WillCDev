@@ -1,0 +1,7 @@
+.game-container {
+    width: 800px;
+    height: 600px;
+    background-color: #98f198;
+    overflow: hidden;
+    margin: auto auto;
+}
