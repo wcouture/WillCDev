@@ -35,7 +35,9 @@ let GAME_DATA = {
         2: false,
         3: false,
     },
-    scene: "mainMenu"
+    scene: "mainMenu",
+    cellSize: 2,
+    gridData: []
 }
 
 function InitGame() {
@@ -45,6 +47,10 @@ function InitGame() {
     const canvas = _sketch.createCanvas(GAME_DATA.width, GAME_DATA.height);
     canvas.parent(GAME_DATA.container);
     _sketch.background(200);
+
+
+    // Initialize the grid data
+    GAME_DATA.gridData = Array(GAME_DATA.height / GAME_DATA.cellSize).fill().map(() => Array(GAME_DATA.width / GAME_DATA.cellSize).fill(0));
 }
 
 function UpdateGame() {
@@ -82,7 +88,70 @@ function DrawMainMenu() {
 
 function DrawGame() {
     // Implement the game drawing logic here
-    _sketch.square(_sketch.mouseX, _sketch.mouseY, 50);
+    let gridX = Math.floor(_sketch.mouseX / GAME_DATA.cellSize);
+    let gridY = Math.floor(_sketch.mouseY / GAME_DATA.cellSize);
+
+    _sketch.square(gridX * GAME_DATA.cellSize, gridY * GAME_DATA.cellSize, GAME_DATA.cellSize);
+
+    // Check if the mouse is within the canvas bounds
+    let mouseWithinBounds = gridX >= 0 && gridX < GAME_DATA.width / GAME_DATA.cellSize && gridY >= 0 && gridY < GAME_DATA.height / GAME_DATA.cellSize;
+
+    if (_sketch.mouseIsPressed && mouseWithinBounds) {
+        GAME_DATA.gridData[gridY][gridX] = 1;
+    }
+
+    // Draw the grid
+    DrawGrid();
+
+    UpdateGrid();
+}
+
+function DrawGrid() {
+    for (let y = 0; y < GAME_DATA.gridData.length; y++) {
+        for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
+            if (GAME_DATA.gridData[y][x] === 1) {
+                _sketch.square(x * GAME_DATA.cellSize, y * GAME_DATA.cellSize, GAME_DATA.cellSize);
+            }
+        }
+    }
+}
+
+function UpdateGrid() {
+    // Create a copy of the current grid to store the next state
+    let newGridData = GAME_DATA.gridData.map(row => row.slice());
+
+    for (let y = 0; y < GAME_DATA.gridData.length; y++) {
+        for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
+            if (GAME_DATA.gridData[y][x] === 1) {
+                let belowOpen = (y + 1 < GAME_DATA.gridData.length && GAME_DATA.gridData[y + 1][x] === 0);
+                let leftDiagonalOpen = (y + 1 < GAME_DATA.gridData.length && x - 1 >= 0 && GAME_DATA.gridData[y + 1][x - 1] === 0);
+                let rightDiagonalOpen = (y + 1 < GAME_DATA.gridData.length && x + 1 < GAME_DATA.gridData[y].length && GAME_DATA.gridData[y + 1][x + 1] === 0);
+
+                if (belowOpen) {
+                    let random = Math.random();
+                    // random side-to-side movement when falling
+                    if (random < 0.2 && x + 1 < GAME_DATA.gridData[y].length) {
+                        newGridData[y + 1][x + 1] = 1;
+                        newGridData[y][x] = 0;
+                    } else if (random < 0.4 && x - 1 >= 0) {
+                        newGridData[y + 1][x - 1] = 1;
+                        newGridData[y][x] = 0;
+                    } else {
+                        newGridData[y + 1][x] = 1;
+                        newGridData[y][x] = 0;
+                    }
+                } else if (leftDiagonalOpen) {
+                    newGridData[y + 1][x - 1] = 1;
+                    newGridData[y][x] = 0;
+                } else if (rightDiagonalOpen) {
+                    newGridData[y + 1][x + 1] = 1;
+                    newGridData[y][x] = 0;
+                }
+            }
+        }
+    }
+
+    GAME_DATA.gridData = newGridData;
 }
 
 
@@ -98,7 +167,6 @@ function HandleKeyPress(keyCode) {
 
 function MainMenuKeyPress(keyCode) {
     if (keyCode === 32) {
-        console.log("Space key pressed");
         GAME_DATA.scene = "game";
     }
 }

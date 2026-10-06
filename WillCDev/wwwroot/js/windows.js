@@ -12,6 +12,14 @@ function FocusWindow(elementId) {
     WINDOW_MANAGER.bringWindowToFront(elementId);
 }
 
+function DisableDragging(elementId) {
+    WINDOW_MANAGER.disableDragging(elementId);
+}
+
+function EnableDragging(elementId) {
+    WINDOW_MANAGER.enableDragging(elementId);
+}
+
 function BringToFront(elementId) {
     $(".draggable").toArray().forEach(element => {
         let zIndex = $(element).css("z-index") - 1;

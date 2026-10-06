@@ -92,6 +92,7 @@
         {
             ProgramAttribute = ProgramRegistry.GetProgram(WindowSetting.ProgramId);
             programParameters.TryAdd("AppId", WindowSetting.AppId);
+            programParameters.TryAdd("WindowId", WindowSetting.ID);
         }
     }
 

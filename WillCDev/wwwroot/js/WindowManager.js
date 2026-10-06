@@ -18,7 +18,10 @@ class WindowManager {
             // Get the window element using jQuery
             console.log("Opening window with id:", id, "and title:", title);
             const windowElement = $('#window-'+id);
-            windowElement.draggable(); // Make the window draggable
+            windowElement.draggable({
+                handle: ".title-bar",
+                cancel: ".window-body, .window-body *"
+            }); // Make the window draggable from the title bar only
             windowElement.resizable({
                 minHeight: 200, // Add a minimum height for resizing
                 minWidth: 200 // Add a minimum width for resizing
@@ -78,6 +81,32 @@ class WindowManager {
             console.error("Error closing window:", error);
         }
         return 0; // Return 0 if there was an error closing the window
+    }
+
+    disableDragging(windowId) {
+        console.log("Disabling dragging for window with ID:", windowId);
+        try {
+            const windowInstance = this.windows.find(win => win.id === windowId);
+            if (windowInstance) {
+                console.log("Found window instance for ID:", windowId);
+                $('#window-' + windowId).draggable("disable");
+            }
+        } catch (error) {
+            console.error("Error pausing dragging for window:", error);
+        }
+    }
+
+    enableDragging(windowId) {
+        console.log("Enabling dragging for window with ID:", windowId);
+        try {
+            const windowInstance = this.windows.find(win => win.id === windowId);
+            if (windowInstance) {
+                console.log("Found window instance for ID:", windowId);
+                $('#window-' + windowId).draggable("enable");
+            }
+        } catch (error) {
+            console.error("Error enabling dragging for window:", error);
+        }
     }
 
     bringWindowToFront(windowId) {

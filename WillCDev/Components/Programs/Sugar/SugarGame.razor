@@ -1,6 +1,4 @@
 @implements IAsyncDisposable
-
-
 <section id="game-container" class="game-container">
 </section>
 
@@ -25,5 +23,5 @@
             await sugarGameModule.InvokeVoidAsync("disposeSugarGame", "game-container");
             await sugarGameModule.DisposeAsync();
         }
-    }  
+    }
 }

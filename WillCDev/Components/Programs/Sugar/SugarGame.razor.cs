@@ -9,5 +9,8 @@ namespace WillCDev.Components.Programs.Sugar
     {
         [Parameter]
         public int AppId { get; set; }
+
+        [Parameter]
+        public int WindowId { get; set; }
     }
 }
