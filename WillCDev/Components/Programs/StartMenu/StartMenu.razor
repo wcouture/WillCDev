@@ -14,14 +14,14 @@
         @for(int i = 0; i < _applications.Count; i++)
         {
             var app = _applications[i];
-            if (app == null)
+            if (app is null)
                 continue;
 
-            <div class="application-item" @onclick="() => OpenApplication(app)">
+            <div class="application-item" @onclick="() => OpenApplication(app.Id)">
                 <div class="application-icon">
-                    <Icon IconName="@app?.IconName" />
+                    <Icon IconName="@app.IconName" />
                 </div>
-                @app?.Name
+                @app.Name
             </div>
         }
     </div>
@@ -39,12 +39,16 @@
 
     private string userName { get; set; } = string.Empty;
 
-    private void OpenApplication(Application? app)
+    private async Task OpenApplication(int appId)
     {
+        var app = _applications.FirstOrDefault(a => a?.Id == appId);
+        Console.WriteLine($"Opening application: {app?.Name}");
         if (app == null)
             return;
 
-        ApplicationService.StartApplication(app.Id);
+        await ApplicationService.StartApplication(appId);
+        
+        await ApplicationService.StopApplication(this.AppId);
     }
 
     protected override async Task OnInitializedAsync()

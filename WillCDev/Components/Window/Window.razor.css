@@ -97,12 +97,19 @@
 }
 
 /* Start Menu Classes */
+.start-menu-section {
+    position: fixed;
+    align-self: flex-end;
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
 .start-menu-frame {
     border: 0.25em solid var(--window-color);
     border-bottom-width: 0.5em;
     border-radius: 5pt 5pt 0 0;
     background-color: white;
-    position: fixed;
     align-self: flex-end;
     z-index: 10002;
     width: 20em;
@@ -125,5 +132,5 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10001;
+    z-index: 999;
 }

@@ -41,12 +41,12 @@
     </section>
 } else if (WindowSetting != null && ProgramAttribute?.ComponentType == typeof(StartMenu))
 {
+    <section class="start-menu-section" @onclick="OnCloseWindow">
         <div id="window-@WindowSetting.ID" class="start-menu-frame start">
-            <StartMenu />
+            <StartMenu AppId="WindowSetting.AppId" />
         </div>
-        <section class="window-click-catcher" @onclick="OnCloseWindow"></section>
+    </section>
 }
-
 @code {
 
     [Inject]
