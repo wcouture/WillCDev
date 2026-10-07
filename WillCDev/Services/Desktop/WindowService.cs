@@ -51,6 +51,8 @@ namespace WillCDev.Services
                 var index = Array.IndexOf(windows, window);
                 if (index >= 0)
                 {
+                    await WaitForWindowClose(window.ID);
+
                     windows[index] = null;
                     windowCount--;
                     if (index == MaximumWindows)
@@ -60,6 +62,19 @@ namespace WillCDev.Services
                 }
             }
             await NotifySubscribers();
+        }
+
+        private async Task WaitForWindowClose(int windowId)
+        {
+            try
+            {
+                int waitMilliseconds = await _jsRuntime.InvokeAsync<int>("CloseWindow", windowId);
+                await Task.Delay(waitMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"JS Invoke Error closing window with WindowId: {windowId}   : {ex.Message}");
+            }
         }
 
         public async Task NotifySubscribers()

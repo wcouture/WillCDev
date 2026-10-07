@@ -71,18 +71,24 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (WindowSetting != null && !isWindowOpen)
-        {
-            await JS.InvokeVoidAsync("OpenWindow", WindowSetting?.ID, WindowSetting?.WindowTitle, ProgramAttribute?.ShrinkWindowOnLoad == true);
-            isWindowOpen = true;
-        } else if (WindowSetting == null)
-        {
-            isWindowOpen = false;
-        }
+        await EnsureWindowInitialized();
 
         if (firstRender && ProgramAttribute?.ShrinkWindowOnLoad == true)
         {
             await JS.InvokeVoidAsync("ShrinkWindow", WindowSetting?.ID);
+        }
+    }
+
+    private async Task EnsureWindowInitialized()
+    {
+        if (WindowSetting != null && !isWindowOpen)
+        {
+            await JS.InvokeVoidAsync("OpenWindow", WindowSetting?.ID, WindowSetting?.WindowTitle, ProgramAttribute?.ShrinkWindowOnLoad == true);
+            isWindowOpen = true;
+        }
+        else if (WindowSetting == null)
+        {
+            isWindowOpen = false;
         }
     }
 
@@ -99,17 +105,7 @@
     private async Task OnCloseWindow()
     {
         if (WindowSetting != null)
-        {
-            try
-            {
-                int waitMilliseconds = await JS.InvokeAsync<int>("CloseWindow", WindowSetting.ID);
-                await Task.Delay(waitMilliseconds);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error closing window with AppId|WindowId: {WindowSetting.AppId}|{WindowSetting.ID}   : {ex.Message}");
-            }
-            
+        {   
             await ApplicationService.StopApplication(WindowSetting.AppId);
             isWindowOpen = false;
         }
