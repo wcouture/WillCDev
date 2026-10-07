@@ -68,18 +68,6 @@
         }
     }
 
-    private async Task InitWindows()
-    {
-        @* await JS.InvokeVoidAsync("InitWindows");
-
-        if (bringWindowToFront && windowToBringToFrontId != -1)
-        {
-            await JS.InvokeVoidAsync("FocusWindow", windowToBringToFrontId);
-            bringWindowToFront = false;
-            windowToBringToFrontId = -1;
-        } *@
-    }
-
     private async Task UpdateWindows(ProgramWindow?[] updatedWindows)
     {
         windows = updatedWindows;
