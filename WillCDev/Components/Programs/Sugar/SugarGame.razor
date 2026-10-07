@@ -4,15 +4,15 @@
 
 @code {
     [Inject]
-    private IJSRuntime JS { get; set; }
+    private IJSRuntime? JS { get; set; }
 
     private IJSObjectReference? sugarGameModule;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && JS != null)
         {
-            sugarGameModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/sugarGame.js");
+            sugarGameModule = await JS.InvokeAsync<IJSObjectReference>("import", "/Components/Programs/Sugar/SugarGame.razor.js");
             await sugarGameModule.InvokeVoidAsync("initializeSugarGame", "game-container");
         }
     }
