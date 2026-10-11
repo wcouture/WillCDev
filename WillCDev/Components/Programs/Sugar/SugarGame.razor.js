@@ -1,12 +1,46 @@
+const GridCellType = {
+    SCENE_BARRIER: 0,
+    SALT: 1,
+    OUT_OF_BOUNDS: 2,
+    COLOR_CHANGER: 3
+};
+
+class GridCell {
+    constructor(x, y, type, color) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.color = color;
+    }
+}
+
 let p5Instance = null;
 let _sketch = null;
+
+const OUT_OF_BOUNDS_CELL = new GridCell(-1, -1, GridCellType.OUT_OF_BOUNDS, `#FF00FF`);
+
+let GAME_DATA = {
+    loading: true,
+    container: null,
+    width: 0,
+    height: 0,
+    levels: {
+        1: false,
+        2: false,
+        3: false,
+    },
+    scene: "mainMenu",
+    cellSize: 2,
+    gridData: undefined,
+    actionCellData: undefined
+}
 
 export function initializeSugarGame(containerId) {
     const container = document.getElementById(containerId);
     if (container && !p5Instance) {
         p5Instance = new p5((sketch) => {
             _sketch = sketch;
-            sketch.setup = InitGame;
+            sketch.setup = InitApplication;
             sketch.draw = UpdateGame;
             sketch.keyPressed = () => {
                 HandleKeyPress(sketch.keyCode);
@@ -26,62 +60,7 @@ export function disposeSugarGame(containerId) {
     }
 }
 
-const GridCellType = {
-    SCENE_BARRIER: 0,
-    SALT: 1,
-    OUT_OF_BOUNDS: 2,
-    COLOR_CHANGER: 3
-};
-
-class GridCell {
-    constructor(x, y, type, color) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.color = color;
-    }
-}
-
-const OUT_OF_BOUNDS_CELL = new GridCell(-1, -1, GridCellType.OUT_OF_BOUNDS, `#FF00FF`);
-
-class GridCellContainer {
-    constructor() {
-        this.cells = [];
-    }
-
-    addCell(cell) {
-        this.cells.push(cell);
-    }
-    
-    removeCell(cell) {
-        const index = this.cells.indexOf(cell);
-        if (index !== -1) {
-            this.cells.splice(index, 1);
-        }
-    }
-
-    getCells() {
-        return this.cells;
-    }
-}
-
-let GAME_DATA = {
-    loaded: false,
-    container: null,
-    width: 0,
-    height: 0,
-    levels: {
-        1: false,
-        2: false,
-        3: false,
-    },
-    scene: "mainMenu",
-    cellSize: 2,
-    gridData: [],
-    actionCellData: []
-}
-
-function InitGame() {
+async function InitApplication() {
     GAME_DATA.container = document.getElementById("game-container");
     GAME_DATA.width = GAME_DATA.container.clientWidth;
     GAME_DATA.height = GAME_DATA.container.clientHeight;
@@ -90,7 +69,16 @@ function InitGame() {
     _sketch.background(200);
     _sketch.strokeWeight(1);
 
-    // Initialize the grid data
+    // Load custom font for the game
+    let font = await _sketch.loadFont('fonts/Vibes-Regular.ttf')
+    _sketch.textFont(font);
+
+    GAME_DATA.loading = false;
+}
+
+function InitializeGrid() {
+    GAME_DATA.loading = true;
+
     GAME_DATA.gridData = Array(GAME_DATA.height / GAME_DATA.cellSize).fill().map(() => Array(GAME_DATA.width / GAME_DATA.cellSize).fill(undefined));
     GAME_DATA.actionCellData = Array(GAME_DATA.height / GAME_DATA.cellSize).fill().map(() => Array(GAME_DATA.width / GAME_DATA.cellSize).fill(undefined));
 
@@ -99,12 +87,13 @@ function InitGame() {
     levelImage.src = "images/Salt/SG_Level_0.png";
     levelImage.onload = () => {
         LoadMapData(levelImage);
-        GAME_DATA.loaded = true;
+        GAME_DATA.loading = false;
     };
 }
 
+// Loads map data from a given level image into the game's grid data
 function LoadMapData(levelImage) {
-    console.log("loading map...")
+    console.log(`Loading map data from image: ${levelImage.src}`);
     const canvas = document.createElement("canvas");
     canvas.width = levelImage.width;
     canvas.height = levelImage.height;
@@ -137,14 +126,17 @@ function LoadMapData(levelImage) {
     }
 }
 
+// Top-level game update loop handler
 function UpdateGame() {
     ClearScreen();
     DrawScene();
 }
 
+// Higher-level update loop handler, delegates to specific scene handlers
 function DrawScene() {
-    if (!GAME_DATA.loaded) {
+    if (GAME_DATA.loading) {
         DrawLoadingScreen();
+        return;
     }
 
     switch (GAME_DATA.scene) {
@@ -152,17 +144,19 @@ function DrawScene() {
             DrawMainMenu();
             break;
         case "game":
-            DrawGame();
+            RunGame();
             break;
         // Add other scenes here as needed
     }
 }
 
+// Clears the entire canvas
 function ClearScreen() {
     _sketch.clear();
     _sketch.background(200);
 }
 
+// Loading screen handler
 function DrawLoadingScreen() {
     _sketch.textAlign(_sketch.CENTER, _sketch.CENTER);
     _sketch.textSize(32);
@@ -170,6 +164,8 @@ function DrawLoadingScreen() {
     _sketch.text("Loading...", GAME_DATA.width / 2, GAME_DATA.height / 2);
 }
 
+
+// Main menu scene update loop handler
 function DrawMainMenu() {
     _sketch.textAlign(_sketch.CENTER, _sketch.CENTER);
     _sketch.textSize(32);
@@ -181,7 +177,13 @@ function DrawMainMenu() {
     _sketch.text("- Press any key to start -", GAME_DATA.width / 2, GAME_DATA.height / 2 + 40);
 }
 
-function DrawGame() {
+// Game scene update loop handler
+function RunGame() {
+    if (!GAME_DATA.gridData) {
+        InitializeGrid();
+        return;
+    }
+
     // Implement the game drawing logic here
     let gridX = Math.floor(_sketch.mouseX / GAME_DATA.cellSize);
     let gridY = Math.floor(_sketch.mouseY / GAME_DATA.cellSize);
@@ -201,6 +203,8 @@ function DrawGame() {
     UpdateGrid();
 }
 
+
+// Game scene drawing and updating functions
 function DrawGrid() {
     for (let y = 0; y < GAME_DATA.gridData.length; y++) {
         for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
