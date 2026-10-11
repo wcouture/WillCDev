@@ -32,7 +32,8 @@ let GAME_DATA = {
     scene: "mainMenu",
     cellSize: 2,
     gridData: undefined,
-    actionCellData: undefined
+    actionCellData: undefined,
+    trackedParticles: []
 }
 
 export function initializeSugarGame(containerId) {
@@ -177,6 +178,12 @@ function DrawMainMenu() {
     _sketch.text("- Press any key to start -", GAME_DATA.width / 2, GAME_DATA.height / 2 + 40);
 }
 
+// Spawns a salt particle at the specified grid coordinates with an optional color
+function SpawnSalt(gridX, gridY, color = `#ffffff`) {
+    GAME_DATA.gridData[gridY][gridX] = new GridCell(gridX, gridY, GridCellType.SALT, color);
+    GAME_DATA.trackedParticles.push({ x: gridX, y: gridY, type: GridCellType.SALT });
+}
+
 // Game scene update loop handler
 function RunGame() {
     if (!GAME_DATA.gridData) {
@@ -193,8 +200,9 @@ function RunGame() {
     // Check if the mouse is within the canvas bounds
     let mouseWithinBounds = gridX >= 0 && gridX < GAME_DATA.width / GAME_DATA.cellSize && gridY >= 0 && gridY < GAME_DATA.height / GAME_DATA.cellSize;
 
+    // Spawn sand at the current mouse position if the mouse is pressed and within bounds
     if (_sketch.mouseIsPressed && mouseWithinBounds) {
-        GAME_DATA.gridData[gridY][gridX] = new GridCell(gridX, gridY, GridCellType.SALT, `#fae098`);
+        SpawnSalt(gridX, gridY);
     }
 
     // Draw the grid
@@ -208,7 +216,11 @@ function RunGame() {
 function DrawGrid() {
     for (let y = 0; y < GAME_DATA.gridData.length; y++) {
         for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
-            const cell = GAME_DATA.gridData[y][x] ? GAME_DATA.gridData[y][x] : GAME_DATA.actionCellData[y][x];
+            let cell = GAME_DATA.gridData[y][x]
+            if (!cell) {
+                cell = GAME_DATA.actionCellData[y][x];
+            }
+
             if (cell instanceof GridCell) {
                 _sketch.push()
                 _sketch.fill(cell.color);
@@ -220,75 +232,81 @@ function DrawGrid() {
     }
 }
 
+function UpdateParticle(x, y, newGridData) {
+    const cell = GAME_DATA.gridData[y][x];
+    if (cell instanceof GridCell && cell.type === GridCellType.SALT) {
+        const actionCell = GAME_DATA.actionCellData[y][x];
+        if (actionCell !== undefined) {
+            // Perform some action with the actionCell if needed
+            if (actionCell.type === GridCellType.COLOR_CHANGER) {
+                cell.color = actionCell.color;
+            }
+        }
+        
+        let leftNeighbors = (x - 1 >= 0) ? GAME_DATA.gridData[y][x - 1] : OUT_OF_BOUNDS_CELL;
+        let rightNeighbors = (x + 1 < GAME_DATA.gridData[y].length) ? GAME_DATA.gridData[y][x + 1] : OUT_OF_BOUNDS_CELL;
+        let leftDiagonalNeighbors = (y + 1 < GAME_DATA.gridData.length && x - 1 >= 0) ? GAME_DATA.gridData[y + 1][x - 1] : OUT_OF_BOUNDS_CELL;
+        let rightDiagonalNeighbors = (y + 1 < GAME_DATA.gridData.length && x + 1 < GAME_DATA.gridData[y].length) ? GAME_DATA.gridData[y + 1][x + 1] : OUT_OF_BOUNDS_CELL;
+        let belowNeighbors = (y + 1 < GAME_DATA.gridData.length) ? GAME_DATA.gridData[y + 1][x] : OUT_OF_BOUNDS_CELL;
+    
+        const belowOpen = belowNeighbors ? false : true;
+        const leftDiagonalOpen = leftDiagonalNeighbors ? false : true;
+        const rightDiagonalOpen = rightDiagonalNeighbors ? false : true;
+        const leftOpen = leftNeighbors ? false : true;
+        const rightOpen = rightNeighbors ? false : true;
+    
+        const moveCell = (fromX, fromY, toX, toY) => {
+            try {
+                newGridData[toY][toX] = cell;
+                newGridData[fromY][fromX] = undefined;
+                cell.x = toX;
+                cell.y = toY;
+                return {newX: toX, newY: toY};
+    
+            } catch (error) {
+                console.error("Error moving cell:", error);
+                console.log("Failed to move cell from", fromX, fromY, "to", toX, toY);
+            }
+        };
+    
+        if (belowOpen) {
+            let random = Math.random();
+    
+            // random side-to-side movement when falling
+            if (random < 0.2 && rightOpen && rightDiagonalOpen) {
+                console.log("moving below diagonal to the right");
+                return moveCell(x, y, x + 1, y + 1);
+            } else if (random < 0.4 && leftOpen && leftDiagonalOpen) {
+                console.log("moving below diagonal to the left");
+                return moveCell(x, y, x - 1, y + 1);
+            } else {
+                console.log("moving directly below");
+                return moveCell(x, y, x, y + 1);
+            }
+        } else if (leftOpen && leftDiagonalOpen) {
+            console.log("moving left and down");
+            return moveCell(x, y, x - 1, y + 1);
+        } else if (rightOpen && rightDiagonalOpen) {
+            console.log("moving right and down");
+            return moveCell(x, y, x + 1, y + 1);
+        }
+        else {
+            console.log("cell cannot move");
+            return {newX: x, newY: y};
+        }
+    }
+}
+
 function UpdateGrid() {
     // Create a copy of the current grid to store the next state
     let newGridData = GAME_DATA.gridData.map(row => row.map(cell => cell ? new GridCell(cell.x, cell.y, cell.type, cell.color) : undefined));
 
     
-    for (let y = 0; y < GAME_DATA.gridData.length; y++) {
-        for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
-            const cell = GAME_DATA.gridData[y][x];
-            if (cell instanceof GridCell && cell.type === GridCellType.SALT) {
-                const actionCell = GAME_DATA.actionCellData[y][x];
-                if (actionCell !== undefined) {
-                    // Perform some action with the actionCell if needed
-                    if (actionCell.type === GridCellType.COLOR_CHANGER) {
-                        cell.color = actionCell.color;
-                    }
-                }
-                
-                let leftNeighbors = (x - 1 >= 0) ? GAME_DATA.gridData[y][x - 1] : OUT_OF_BOUNDS_CELL;
-                let rightNeighbors = (x + 1 < GAME_DATA.gridData[y].length) ? GAME_DATA.gridData[y][x + 1] : OUT_OF_BOUNDS_CELL;
-                let leftDiagonalNeighbors = (y + 1 < GAME_DATA.gridData.length && x - 1 >= 0) ? GAME_DATA.gridData[y + 1][x - 1] : OUT_OF_BOUNDS_CELL;
-                let rightDiagonalNeighbors = (y + 1 < GAME_DATA.gridData.length && x + 1 < GAME_DATA.gridData[y].length) ? GAME_DATA.gridData[y + 1][x + 1] : OUT_OF_BOUNDS_CELL;
-                let belowNeighbors = (y + 1 < GAME_DATA.gridData.length) ? GAME_DATA.gridData[y + 1][x] : OUT_OF_BOUNDS_CELL;
-
-                const belowOpen = belowNeighbors ? false : true;
-                const leftDiagonalOpen = leftDiagonalNeighbors ? false : true;
-                const rightDiagonalOpen = rightDiagonalNeighbors ? false : true;
-                const leftOpen = leftNeighbors ? false : true;
-                const rightOpen = rightNeighbors ? false : true;
-
-                const moveCell = (fromX, fromY, toX, toY) => {
-                    try {
-                        newGridData[toY][toX] = cell;
-                        newGridData[fromY][fromX] = undefined;
-                        cell.x = toX;
-                        cell.y = toY;
-
-                    } catch (error) {
-                        console.error("Error moving cell:", error);
-                        console.log("Failed to move cell from", fromX, fromY, "to", toX, toY);
-                    }
-                };
-
-                if (belowOpen) {
-                    let random = Math.random();
-
-                    // random side-to-side movement when falling
-                    if (random < 0.2 && rightOpen && rightDiagonalOpen) {
-                        console.log("moving below diagonal to the right");
-                        moveCell(x, y, x + 1, y + 1);
-                    } else if (random < 0.4 && leftOpen && leftDiagonalOpen) {
-                        console.log("moving below diagonal to the left");
-                        moveCell(x, y, x - 1, y + 1);
-                    } else {
-                        console.log("moving directly below");
-                        moveCell(x, y, x, y + 1);
-                    }
-                } else if (leftOpen && leftDiagonalOpen) {
-                    console.log("moving left and down");
-                    moveCell(x, y, x - 1, y + 1);
-                } else if (rightOpen && rightDiagonalOpen) {
-                    console.log("moving right and down");
-                    moveCell(x, y, x + 1, y + 1);
-                }
-                else {
-                    console.log("cell cannot move");
-                }
-            }
-        }
-
+    for (let p = 0; p < GAME_DATA.trackedParticles.length; p++) {
+        const particle = GAME_DATA.trackedParticles[p];
+        const newPosition = UpdateParticle(particle.x, particle.y, newGridData);
+        particle.x = newPosition.newX;
+        particle.y = newPosition.newY;
     }
 
     GAME_DATA.gridData = newGridData;
