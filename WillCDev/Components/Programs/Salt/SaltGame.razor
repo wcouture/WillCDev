@@ -1,0 +1,27 @@
+@implements IAsyncDisposable
+<section id="game-container" class="game-container">
+</section>
+
+@code {
+    [Inject]
+    private IJSRuntime? JS { get; set; }
+
+    private IJSObjectReference? saltGameModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && JS != null)
+        {
+            saltGameModule = await JS.InvokeAsync<IJSObjectReference>("import", "/Components/Programs/Salt/SaltGame.razor.js");
+            await saltGameModule.InvokeVoidAsync("initializeSaltGame", "game-container");
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (saltGameModule != null)
+        {
+            await saltGameModule.InvokeVoidAsync("disposeSaltGame", "game-container");
+            await saltGameModule.DisposeAsync();
+        }
+    }
+}

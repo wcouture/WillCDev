@@ -33,10 +33,11 @@ let GAME_DATA = {
     cellSize: 2,
     gridData: undefined,
     actionCellData: undefined,
-    trackedParticles: []
+    trackedParticles: [],
+    gridImage: undefined,
 }
 
-export function initializeSugarGame(containerId) {
+export function initializeSaltGame(containerId) {
     const container = document.getElementById(containerId);
     if (container && !p5Instance) {
         p5Instance = new p5((sketch) => {
@@ -50,7 +51,7 @@ export function initializeSugarGame(containerId) {
     }
 }
 
-export function disposeSugarGame(containerId) {
+export function disposeSaltGame(containerId) {
     const container = document.getElementById(containerId);
     if (container) {
         container.innerHTML = "";
@@ -68,7 +69,7 @@ async function InitApplication() {
     const canvas = _sketch.createCanvas(GAME_DATA.width, GAME_DATA.height);
     canvas.parent(GAME_DATA.container);
     _sketch.background(200);
-    _sketch.strokeWeight(1);
+    _sketch.strokeWeight(0);
 
     // Load custom font for the game
     let font = await _sketch.loadFont('fonts/Vibes-Regular.ttf')
@@ -111,7 +112,7 @@ function LoadMapData(levelImage) {
             const b = imageData[pixelIndex + 2];
             const a = imageData[pixelIndex + 3];
 
-            const hasValue = a > 180
+            const hasValue = a > 200
             const isBlack = r === 0 && g === 0 && b === 0;
             if (!hasValue)
                 continue;
@@ -165,7 +166,6 @@ function DrawLoadingScreen() {
     _sketch.text("Loading...", GAME_DATA.width / 2, GAME_DATA.height / 2);
 }
 
-
 // Main menu scene update loop handler
 function DrawMainMenu() {
     _sketch.textAlign(_sketch.CENTER, _sketch.CENTER);
@@ -211,7 +211,6 @@ function RunGame() {
     UpdateGrid();
 }
 
-
 // Game scene drawing and updating functions
 function DrawGrid() {
     for (let y = 0; y < GAME_DATA.gridData.length; y++) {
@@ -234,6 +233,7 @@ function DrawGrid() {
 
 function UpdateParticle(x, y, newGridData) {
     const cell = GAME_DATA.gridData[y][x];
+
     if (cell instanceof GridCell && cell.type === GridCellType.SALT) {
         const actionCell = GAME_DATA.actionCellData[y][x];
         if (actionCell !== undefined) {
@@ -300,7 +300,6 @@ function UpdateParticle(x, y, newGridData) {
 function UpdateGrid() {
     // Create a copy of the current grid to store the next state
     let newGridData = GAME_DATA.gridData.map(row => row.map(cell => cell ? new GridCell(cell.x, cell.y, cell.type, cell.color) : undefined));
-
     
     for (let p = 0; p < GAME_DATA.trackedParticles.length; p++) {
         const particle = GAME_DATA.trackedParticles[p];

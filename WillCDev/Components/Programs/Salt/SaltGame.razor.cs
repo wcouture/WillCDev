@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Components;
 using Shared.Attributes;
 using Shared.Models;
 
-namespace WillCDev.Components.Programs.Sugar
+namespace WillCDev.Components.Programs.Salt
 {
-    [Program("Sugar Game", iconName: "Registry Editor", shrinkWindowOnLoad: true)]
-    public partial class SugarGame : IProgram
+    [Program("Salt Game", iconName: "Registry Editor", shrinkWindowOnLoad: true)]
+    public partial class SaltGame : IProgram
     {
         [Parameter]
         public int AppId { get; set; }
