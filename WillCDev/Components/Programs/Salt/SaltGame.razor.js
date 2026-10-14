@@ -90,6 +90,7 @@ function InitializeGrid() {
     levelImage.onload = () => {
         LoadMapData(levelImage);
         GAME_DATA.loading = false;
+        DrawGrid();
     };
 }
 
@@ -181,7 +182,7 @@ function DrawMainMenu() {
 // Spawns a salt particle at the specified grid coordinates with an optional color
 function SpawnSalt(gridX, gridY, color = `#ffffff`) {
     GAME_DATA.gridData[gridY][gridX] = new GridCell(gridX, gridY, GridCellType.SALT, color);
-    GAME_DATA.trackedParticles.push({ x: gridX, y: gridY, type: GridCellType.SALT });
+    GAME_DATA.trackedParticles.push({ x: gridX, y: gridY, type: GridCellType.SALT, noMoveUpdates: 0 });
 }
 
 // Game scene update loop handler
@@ -205,10 +206,12 @@ function RunGame() {
         SpawnSalt(gridX, gridY);
     }
 
+    if (GAME_DATA.trackedParticles.length > 0) {
+        UpdateGrid();
+    }
+    
     // Draw the grid
     DrawGrid();
-
-    UpdateGrid();
 }
 
 // Game scene drawing and updating functions
@@ -231,8 +234,12 @@ function DrawGrid() {
     }
 }
 
-function UpdateParticle(x, y, newGridData) {
+function UpdateParticle(particle, newGridData) {
+    const x = particle.x;
+    const y = particle.y;
+    const noMoveUpdates = particle.noMoveUpdates;
     const cell = GAME_DATA.gridData[y][x];
+
 
     if (cell instanceof GridCell && cell.type === GridCellType.SALT) {
         const actionCell = GAME_DATA.actionCellData[y][x];
@@ -274,25 +281,19 @@ function UpdateParticle(x, y, newGridData) {
     
             // random side-to-side movement when falling
             if (random < 0.2 && rightOpen && rightDiagonalOpen) {
-                console.log("moving below diagonal to the right");
                 return moveCell(x, y, x + 1, y + 1);
             } else if (random < 0.4 && leftOpen && leftDiagonalOpen) {
-                console.log("moving below diagonal to the left");
                 return moveCell(x, y, x - 1, y + 1);
             } else {
-                console.log("moving directly below");
                 return moveCell(x, y, x, y + 1);
             }
         } else if (leftOpen && leftDiagonalOpen) {
-            console.log("moving left and down");
             return moveCell(x, y, x - 1, y + 1);
         } else if (rightOpen && rightDiagonalOpen) {
-            console.log("moving right and down");
             return moveCell(x, y, x + 1, y + 1);
         }
         else {
-            console.log("cell cannot move");
-            return {newX: x, newY: y};
+            return {newX: x, newY: y, noMoveUpdates: noMoveUpdates + 1};
         }
     }
 }
@@ -303,9 +304,16 @@ function UpdateGrid() {
     
     for (let p = 0; p < GAME_DATA.trackedParticles.length; p++) {
         const particle = GAME_DATA.trackedParticles[p];
-        const newPosition = UpdateParticle(particle.x, particle.y, newGridData);
+        const newPosition = UpdateParticle(particle, newGridData);
         particle.x = newPosition.newX;
         particle.y = newPosition.newY;
+        particle.noMoveUpdates = newPosition.noMoveUpdates;
+
+        if (particle.noMoveUpdates > 2) {
+            // Remove the particle from the tracked particles array
+            GAME_DATA.trackedParticles.splice(p, 1);
+            p--; // Adjust the index to account for the removed element
+        }
     }
 
     GAME_DATA.gridData = newGridData;
