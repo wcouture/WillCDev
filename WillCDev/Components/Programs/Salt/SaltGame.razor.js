@@ -2,7 +2,8 @@ const GridCellType = {
     SCENE_BARRIER: 0,
     SALT: 1,
     OUT_OF_BOUNDS: 2,
-    COLOR_CHANGER: 3
+    COLOR_CHANGER: 3,
+    GRAIN_COUNTER: 4,
 };
 
 class GridCell {
@@ -35,6 +36,7 @@ let GAME_DATA = {
     actionCellData: undefined,
     trackedParticles: [],
     gridImage: undefined,
+    colorCounters: {},
 }
 
 export function initializeSaltGame(containerId) {
@@ -113,17 +115,21 @@ function LoadMapData(levelImage) {
             const b = imageData[pixelIndex + 2];
             const a = imageData[pixelIndex + 3];
 
-            const hasValue = a > 200
-            const isBlack = r === 0 && g === 0 && b === 0;
-            if (!hasValue)
-                continue;
+            const highAlpha = a > 200;
+            const noColor = r === 0 && g === 0 && b === 0;
 
-            if (isBlack) {
+            if (highAlpha && noColor) {
                 console.log("Adding black cell at", x, y);
                 GAME_DATA.gridData[y][x] = new GridCell(x, y, GridCellType.SCENE_BARRIER, `#000000`);
-            } 
-            else {
+            }
+            else if (highAlpha) {
                 GAME_DATA.actionCellData[y][x] = new GridCell(x, y, GridCellType.COLOR_CHANGER, `rgba(${r},${g},${b},1)`);
+            } else if (!noColor) {
+                GAME_DATA.actionCellData[y][x] = new GridCell(x, y, GridCellType.GRAIN_COUNTER, `rgba(${r},${g},${b},1)`);
+                // Initialize color counter for this color if it doesn't exist
+                if (!GAME_DATA.colorCounters[`rgba(${r},${g},${b},1)`]) {
+                    GAME_DATA.colorCounters[`rgba(${r},${g},${b},1)`] = 0;
+                }
             }
         }
     }
@@ -212,9 +218,26 @@ function RunGame() {
     
     // Draw the grid
     DrawGrid();
+    DrawColorCounters();
 }
 
 // Game scene drawing and updating functions
+function DrawColorCounters() {
+    _sketch.push();
+    _sketch.textAlign(_sketch.LEFT, _sketch.TOP);
+    _sketch.textSize(16);
+
+    let index = 0;
+    for (const [color, count] of Object.entries(GAME_DATA.colorCounters)) {
+        _sketch.fill(color);
+        _sketch.square(10, 10 + 20 * index, 10);
+        _sketch.fill(0);
+        _sketch.text(`: ${count}`, 25, 10 + 20 * index);
+        index++;
+    }
+
+    _sketch.pop();
+}
 function DrawGrid() {
     for (let y = 0; y < GAME_DATA.gridData.length; y++) {
         for (let x = 0; x < GAME_DATA.gridData[y].length; x++) {
@@ -245,8 +268,15 @@ function UpdateParticle(particle, newGridData) {
         const actionCell = GAME_DATA.actionCellData[y][x];
         if (actionCell !== undefined) {
             // Perform some action with the actionCell if needed
-            if (actionCell.type === GridCellType.COLOR_CHANGER) {
-                cell.color = actionCell.color;
+            switch (actionCell.type) {
+                case GridCellType.GRAIN_COUNTER:
+                    if (GAME_DATA.colorCounters[actionCell.color] !== undefined) {
+                        GAME_DATA.colorCounters[actionCell.color]++;
+                    }
+                    break;
+                case GridCellType.COLOR_CHANGER:
+                    cell.color = actionCell.color;
+                    break;
             }
         }
         
